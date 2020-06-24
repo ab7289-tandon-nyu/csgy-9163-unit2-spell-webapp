@@ -1,0 +1,4 @@
+include spellr/schema.sql
+graft spellr/static
+graft spellr/templates
+global-exclude *.pyc

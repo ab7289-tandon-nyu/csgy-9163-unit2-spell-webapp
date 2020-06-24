@@ -1,0 +1,5 @@
+flask
+tox
+pytest
+coverage
+black
