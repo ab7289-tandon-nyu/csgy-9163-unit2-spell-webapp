@@ -2,13 +2,14 @@
 <html>
     <head>
         <!--Let browser know website is optimized for mobile-->
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
         <title>{% block title %}{% endblock %} - Spellr</title>
         {% block css %}
         <!--Import Google Icon Font-->
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <!--Import materialize.css-->
-        <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+        <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}"  media="screen,projection"/>
+        <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" media="screen,projection"/>
         {% endblock %}
     </head>
     <body>
@@ -37,7 +38,7 @@
             </div>
         </nav>
 
-        <div class="container">
+        <main class="container">
             <header>
                 {% block header %}{% endblock %}
             </header>
@@ -45,11 +46,12 @@
                 <div class="flash">{{ message }}</div>
             {% endfor %}
             {% block content %}
-                <p>Hello, World!</p>
             {% endblock %}
-        </div>
+        </main>
 
         <footer class="page-footer orange">
+            <!--<div class="container">
+            </div>-->
             <div class="footer-copywrite">
                 <div class="container">
                     Made by <a class="orange-text text-lighten-3" href="http://materializecss.com">Materialize</a>
@@ -60,8 +62,8 @@
         {% block javascript %}
             <!--JavaScript at end of body for optimized loading-->
             <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-            <script type="text/javascript" src="js/materialize.min.js"></script>
-            <script src="js/init.js"></script>
+            <script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+            <script src="{{ url_for('static', filename='js/init.js') }}"></script>
         {% endblock %}
     </body>
 </html>
