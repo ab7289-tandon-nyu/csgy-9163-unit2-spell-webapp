@@ -24,6 +24,10 @@ main {
     flex: 1 0 auto;
 }
 
-.flash {
+.flash.error {
     color: red;
+}
+
+.flash.success {
+    color: green;
 }

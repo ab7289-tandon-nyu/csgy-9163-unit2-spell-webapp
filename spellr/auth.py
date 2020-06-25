@@ -6,6 +6,7 @@ from flask import (
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from spellr.db import get_db
+from spellr.util import get_flash_msg
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -16,11 +17,12 @@ def register():
         password = request.form['pword']
         db = get_db()
         error = None
+        success = None
         
         if not username:
-            error = 'Username is required.'
+            error = 'Failure, Username is required.'
         elif not password:
-            error = 'Password is required.'
+            error = 'Failure, Password is required.'
         elif db.execute(
             'SELECT id FROM user WHERE username = ?', (username,)
         ).fetchone() is not None:
@@ -32,9 +34,11 @@ def register():
                 (username, generate_password_hash(password))
             )
             db.commit()
+            success = "Success!"
+            flash(*get_flash_msg(error=error, success=success))
             return redirect(url_for('auth.login'))
         
-        flash(error)
+        flash(*get_flash_msg(error=error, success=success))
     return render_template('auth/register.html')
 
 @bp.route('/login', methods=('GET', 'POST'))
@@ -44,6 +48,8 @@ def login():
         password = request.form['pword']
         db = get_db()
         error = None
+        success = None
+
         user = db.execute(
             'SELECT * FROM user WHERE username = ?', (username,)
         ).fetchone()
@@ -56,9 +62,11 @@ def login():
         if error is None:
             session.clear()
             session['user_id'] = user['id']
+            success = "Success!"
+            flash(*get_flash_msg(error=error, success=success))
             return redirect(url_for('index'))
         
-        flash(error)
+        flash(*get_flash_msg(error=error, success=success))
     return render_template('auth/login.html')
 
 @bp.before_app_request
@@ -75,7 +83,7 @@ def load_logged_in_user():
 @bp.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('index'))
+    return redirect(url_for('auth.login'))
 
 def login_required(view):
     @functools.wraps(view)
