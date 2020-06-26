@@ -5,3 +5,4 @@ coverage
 black
 mock
 flake8
+coveralls
