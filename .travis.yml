@@ -1,4 +1,6 @@
 language: python
+os: linux
+dist: xenial
 python:
   - "3.6"
 
@@ -11,3 +13,7 @@ install:
 
 script: 
   - tox
+  - coverage run -m pytest
+
+on_success:
+  - coveralls
