@@ -3,3 +3,5 @@ tox
 pytest
 coverage
 black
+mock
+flake8
