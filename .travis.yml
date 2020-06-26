@@ -15,5 +15,5 @@ script:
   - tox
   - coverage run -m pytest
 
-on_success:
+after_success:
   - coveralls
