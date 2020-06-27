@@ -23,6 +23,7 @@ def register():
     if request.method == "POST":
         username = request.form["uname"]
         password = request.form["pword"]
+        two_factor = request.form["2fa"]
         db = get_db()
         error = None
         success = None
@@ -31,6 +32,8 @@ def register():
             error = "Failure, Username is required."
         elif not password:
             error = "Failure, Password is required."
+        elif not two_factor:
+            error = "Failure, Two Factor Auth device is required."
         elif (
             db.execute("SELECT id FROM user WHERE username = ?", (username,)).fetchone()
             is not None
@@ -39,8 +42,8 @@ def register():
 
         if error is None:
             db.execute(
-                "INSERT INTO user (username,password) VALUES (?,?)",
-                (username, generate_password_hash(password)),
+                "INSERT INTO user (username,password,two_factor) VALUES (?,?,?)",
+                (username, generate_password_hash(password), two_factor),
             )
             db.commit()
             success = "Success!"
@@ -56,6 +59,7 @@ def login():
     if request.method == "POST":
         username = request.form["uname"]
         password = request.form["pword"]
+        two_factor = request.form["2fa"]
         db = get_db()
         error = None
         success = None
@@ -68,6 +72,8 @@ def login():
             error = "Incorrect username."
         elif not check_password_hash(user["password"], password):
             error = "Incorrect password."
+        elif not user["two_factor"] == two_factor:
+            error = "Two Factor Device doesn't match."
 
         if error is None:
             session.clear()
