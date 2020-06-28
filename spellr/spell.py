@@ -1,22 +1,33 @@
-from flask import Blueprint, flash, g, redirect, render_template, request, url_for
-from werkzeug.exceptions import abort
+from flask import Blueprint, redirect, render_template, request, url_for
 
 import subprocess
 
 from spellr.auth import login_required
-from spellr.db import get_db
 
 bp = Blueprint("spell", __name__)
 
 
 @bp.route("/spell_check", methods=("GET", "POST"))
-def index():
+@login_required
+def spell():
     result = ""
     text = ""
     if request.method == "POST":
         text = request.form["inputtext"]
         # do stuff with output
-        # result = subprocess.call...
-        result = text
+        with open(r"./spellr/input.txt", "r+") as f:
+            f.truncate(0)
+            f.write(text)
+
+        result = subprocess.check_output(
+            [r"./spellr/spell_check", r"./spellr/input.txt", r"./spellr/wordlist.txt"]
+        )
+        result = result.decode("utf-8").strip()
+        # result = text
 
     return render_template("spell/index.html", orig_text=text, result=result)
+
+
+@bp.route("/")
+def index():
+    return redirect(url_for("spell.spell"))

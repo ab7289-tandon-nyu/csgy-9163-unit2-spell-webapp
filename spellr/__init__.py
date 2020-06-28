@@ -37,5 +37,5 @@ def create_app(test_config=None):
 
     app.register_blueprint(spell.bp)
 
-    app.add_url_rule("/spell_check", endpoint="index")
+    app.add_url_rule("/", "index", spell.index)
     return app
