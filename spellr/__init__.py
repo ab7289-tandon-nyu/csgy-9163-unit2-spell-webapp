@@ -33,5 +33,9 @@ def create_app(test_config=None):
 
     app.register_blueprint(auth.bp)
 
+    from . import spell
+
+    app.register_blueprint(spell.bp)
+
     app.add_url_rule("/", endpoint="index")
     return app

@@ -73,7 +73,7 @@ def login():
         elif not check_password_hash(user["password"], password):
             error = "Incorrect password."
         elif not user["two_factor"] == two_factor:
-            error = "Two Factor Device doesn't match."
+            error = "Two Factor Device does not match."
 
         if error is None:
             session.clear()
