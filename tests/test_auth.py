@@ -36,7 +36,7 @@ def test_register_validate_input(client, username, password, two_factor, message
 def test_login(client, auth):
     assert client.get("/auth/login").status_code == 200
     response = auth.login()
-    assert response.headers["Location"] == "http://localhost/"
+    assert response.headers["Location"] == "http://localhost/spell_check"
 
     with client:
         client.get("/")
@@ -49,7 +49,7 @@ def test_login(client, auth):
     (
         ("a", "test", "1112223333", b"Incorrect username."),
         ("test", "a", "1112223333", b"Incorrect password."),
-        ("test", "test", "1", b"Two Factor Device does not match."),
+        ("test", "test", "1", b"Two Factor Device failure."),
     ),
 )
 def test_login_validate_input(auth, username, password, two_factor, message):

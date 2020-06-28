@@ -7,7 +7,7 @@ def create_app(test_config=None):
     #  create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
-        SECRET_KEY="dev", DATABASE=os.path.join(app.instance_path, "flaskr.sqlite")
+        SECRET_KEY="dev", DATABASE=os.path.join(app.instance_path, "spellr.sqlite")
     )
 
     if test_config is None:
@@ -37,5 +37,5 @@ def create_app(test_config=None):
 
     app.register_blueprint(spell.bp)
 
-    app.add_url_rule("/", endpoint="index")
+    app.add_url_rule("/spell_check", endpoint="index")
     return app
