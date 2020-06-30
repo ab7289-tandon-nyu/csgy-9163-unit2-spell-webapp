@@ -24,8 +24,7 @@ jobs:
     - name: "tests"
 
       before_install:
-        - python --version
-        - pip --version
+        - git submodule update --init --recursive
         - mkdir spellr/lib/spell_check/bin
         - mkdir spellr/lib/spell_check/build
         - cd spellr/lib/spell_check/build
