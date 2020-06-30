@@ -1,8 +1,12 @@
 language: python
 os: linux
 dist: xenial
+
 python:
   - "3.6"
+
+git:
+  submodules: false
 
 jobs:
   include:
@@ -20,8 +24,15 @@ jobs:
     - name: "tests"
 
       before_install:
-        - python --version
-        - pip --version
+        - git submodule update --init --recursive
+        - pip install cpp-coveralls gcovr
+        - sudo apt-get update -y && sudo apt-get -y install build-essential check pkg-config
+        - mkdir spellr/lib/spell_check/bin
+        - mkdir spellr/lib/spell_check/build
+        - cd spellr/lib/spell_check/build
+        - cmake ..
+        - make
+        - cd $TRAVIS_BUILD_DIR
        
       install:
         - pip install -r requirements.txt
