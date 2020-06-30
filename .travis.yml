@@ -25,7 +25,7 @@ jobs:
 
       before_install:
         - git submodule update --init --recursive
-        - pip install --user cpp-coveralls gcovr
+        - pip install cpp-coveralls gcovr
         - sudo apt-get update -y && sudo apt-get -y install build-essential check pkg-config
         - mkdir spellr/lib/spell_check/bin
         - mkdir spellr/lib/spell_check/build
