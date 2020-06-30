@@ -20,7 +20,11 @@ def spell():
             f.write(text)
 
         result = subprocess.check_output(
-            [r"./spellr/lib/spell_check/bin/spell_check", r"./spellr/input.txt", r"./spellr/lib/spell_check/res/wordlist.txt"]
+            [
+                r"./spellr/lib/spell_check/bin/spell_check",
+                r"./spellr/input.txt",
+                r"./spellr/lib/spell_check/res/wordlist.txt",
+            ]
         )
         result = result.decode("utf-8").strip()
         # result = text
