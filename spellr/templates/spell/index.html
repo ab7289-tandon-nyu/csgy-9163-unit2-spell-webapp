@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1>{% block title %}Spellr{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <form class="col s12" method="post">
+            <div class="row">
+                <div class="input-field col s12">
+                    <textarea id="inputtext" name="inputtext" class="materialize-textarea validate"></textarea>
+                    <label for="inputtext">Please enter your text</label>
+                </div>
+            </div>
+            <button class="btn waves-effect waves-light orange" type="submit" name="action">Check Spelling
+                <i class="material-icons right">send</i>
+            </button>
+        </form>
+    </div>
+    <div>
+        <div class="row">
+            <div class="col s12 m12">
+                <textarea id="textout" name="textout" class="materialize-textarea validate">{{ orig_text }}</textarea>
+                <label for="textout">Original Text</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12 m12">
+                <textarea id="misspelled" name="misspelled" class="materialize-textarea validate">{{ result }}</textarea>
+                <label for="misspelled">Misspelled words</label>
+            </div>
+        </div>
+    </div>
+{% endblock %}
