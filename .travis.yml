@@ -1,8 +1,12 @@
 language: python
 os: linux
 dist: xenial
+
 python:
   - "3.6"
+
+git:
+  submodules: false
 
 jobs:
   include:
@@ -22,6 +26,11 @@ jobs:
       before_install:
         - python --version
         - pip --version
+        - mkdir spellr/lib/spell_check/bin
+        - mkdir spellr/lib/spell_check/build
+        - cd spellr/lib/spell_check/build
+        - cmake ..
+        - make
        
       install:
         - pip install -r requirements.txt
