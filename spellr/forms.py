@@ -73,17 +73,15 @@ class RegisterForm(FlaskForm):
         super(RegisterForm, self).__init__(*args, **kwargs)
         self.user = None
 
-    def validate_2fa(form, field):
-        if len(field.data) > 16:
-            raise ValidationError("Failure, invalid phone number.")
+    def validate_two_factor(form, field):
         try:
-            input_number = phonenumbers.parse(field.data)
-            if not phonenumbers.is_valid_number(input_number):
+            input_number = phonenumbers.parse(field.data, region="US")
+            if not phonenumbers.is_possible_number(input_number):
                 raise ValidationError("Failure, invalid phone number.")
         except phonenumbers.NumberParseException:
-            input_number = phonenumbers.parse(f"+1{field.data}")
-            if not phonenumbers.is_valid_number(input_number):
-                raise ValidationError("Failure, invalid phone number.")
+            # input_number = phonenumbers.parse("+1"+field.data)
+            # if not phonenumbers.is_valid_number(input_number):
+            raise ValidationError("Failure, invalid phone number.")
 
     def validate(self):
         initial_validation = super(RegisterForm, self).validate()
