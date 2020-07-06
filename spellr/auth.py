@@ -1,23 +1,25 @@
-import functools
-
 from flask import (
     Blueprint,
     flash,
-    g,
     redirect,
     render_template,
     request,
-    session,
     url_for,
 )
 from werkzeug.security import generate_password_hash
+from flask_login import login_required, login_user, logout_user
 
-from spellr.extensions import db
+from spellr.extensions import db, login_manager
 from spellr.models import User
 from spellr.util import flash_errors
 from spellr.forms import RegisterForm, LoginForm
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 
 @bp.route("/register", methods=("GET", "POST"))
@@ -42,8 +44,7 @@ def register():
 def login():
     form = LoginForm(request.form)
     if form.validate_on_submit():
-        session.clear()
-        session["user_id"] = form.user.id
+        login_user(form.user)
         flash("You are logged in.", "success")
         return redirect(url_for("index"))
     else:
@@ -51,28 +52,8 @@ def login():
     return render_template("auth/login.html", form=form)
 
 
-@bp.before_app_request
-def load_logged_in_user():
-    user_id = session.get("user_id")
-
-    if user_id is None:
-        g.user = None
-    else:
-        g.user = User.query.get(user_id)
-
-
 @bp.route("/logout")
+@login_required
 def logout():
-    session.clear()
+    logout_user()
     return redirect(url_for("auth.login"))
-
-
-def login_required(view):
-    @functools.wraps(view)
-    def wrapped_view(**kwargs):
-        if g.user is None:
-            return redirect(url_for("auth.login"))
-
-        return view(**kwargs)
-
-    return wrapped_view

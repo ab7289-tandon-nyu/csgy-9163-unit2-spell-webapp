@@ -1,7 +1,7 @@
 import os
 
 from flask import Flask
-from spellr.extensions import db, csrf
+from spellr.extensions import db, csrf, login_manager
 
 
 def create_app(test_config=None):
@@ -35,7 +35,7 @@ def create_app(test_config=None):
     csrf.init_app(app)
 
     # init flask-login
-    # login_manager.init_app(app)
+    login_manager.init_app(app)
 
     # define blueprints
     from . import auth
