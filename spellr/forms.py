@@ -38,7 +38,7 @@ class LoginForm(FlaskForm):
             return False
 
         if not self.user["two_factor"] == self.two_factor.data:
-            self.two_factor.errors.append("Two factor auth device failure")
+            self.two_factor.errors.append("Two-factor auth device failure")
             return False
         return True
 
