@@ -1,4 +1,6 @@
 flask
+Flask-WTF
+phonenumbers
 tox
 pytest
 coverage

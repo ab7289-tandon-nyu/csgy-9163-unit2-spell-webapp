@@ -7,22 +7,23 @@
 {% block content %}
     <div class="row">
         <form class="col s12" method="post">
+            {{ form.csrf_token }}
             <div class="row">
                 <div class="input-field col s12">
-                    <input name="uname" id="uname" type="text" class="validate" required>
-                    <label for="uname">Username</label>
+                    {{ form.username.label }}
+                    {{ form.username(class_="validate") }}
                 </div>
             </div>
             <div class="row">
                 <div class="input-field col s12">
-                    <input type="password" name="pword" id="pword" class="validate" required>
-                    <label for="pword">Password</label>
+                    {{ form.password.label }}
+                    {{ form.password(class_="validate") }}
                 </div>
             </div>
             <div class="row">
                 <div class="input-field col s12">
-                    <input type="tel" name="2fa" id="2fa" class="validate" required>
-                    <label for="2fa">Two Factor Auth Device</label>
+                    {{ form.two_factor.label }}
+                    {{ form.two_factor(class_="validate") }}
                 </div>
             </div>
             <button class="btn waves-effect waves-light orange" type="submit" name="action">Register
