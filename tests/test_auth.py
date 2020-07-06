@@ -6,13 +6,13 @@ from spellr.db import get_db
 def test_register(client, app):
     assert client.get("/auth/register").status_code == 200
     response = client.post(
-        "/auth/register", data={"uname": "a", "pword": "a", "2fa": "1"}
+        "/auth/register", data={"username": "aaa", "password": "aaaaaa", "two_factor": "1"}
     )
-    assert "http://localhost/auth/login" == response.headers["Location"]
+    assert "/auth/login" in response.headers.get("Location")
 
     with app.app_context():
         assert (
-            get_db().execute("select * from user where username = 'a'",).fetchone()
+            get_db().execute("select * from user where username = 'aaa'",).fetchone()
             is not None
         )
 
@@ -28,7 +28,7 @@ def test_register(client, app):
 )
 def test_register_validate_input(client, username, password, two_factor, message):
     response = client.post(
-        "/auth/register", data={"uname": username, "pword": password, "2fa": two_factor}
+        "/auth/register", data={"username": username, "password": password, "two_factor": two_factor}
     )
     assert message in response.data
 
@@ -47,9 +47,9 @@ def test_login(client, auth):
 @pytest.mark.parametrize(
     ("username", "password", "two_factor", "message"),
     (
-        ("a", "test", "1112223333", b"Incorrect username."),
-        ("test", "a", "1112223333", b"Incorrect password."),
-        ("test", "test", "1", b"Two Factor Device failure."),
+        ("a", "test", "1112223333", b"Incorrect username or password"),
+        ("test", "a", "1112223333", b"Incorrect username or password"),
+        ("test", "test", "1", b"Two factor auth device failure"),
     ),
 )
 def test_login_validate_input(auth, username, password, two_factor, message):

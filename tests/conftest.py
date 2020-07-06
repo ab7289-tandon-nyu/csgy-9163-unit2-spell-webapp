@@ -13,7 +13,7 @@ with open(os.path.join(os.path.dirname(__file__), "data.sql"), "rb") as f:
 def app():
     db_fd, db_path = tempfile.mkstemp()
 
-    app = create_app({"TESTING": True, "DATABASE": db_path,})  # noqa: E231
+    app = create_app({"TESTING": True, "DATABASE": db_path, "WTF_CSRF_ENABLED": False, "WTF_CSRF_METHODS": []})  # noqa: E231
 
     with app.app_context():
         init_db()
@@ -42,7 +42,7 @@ class AuthActions(object):
     def login(self, username="test", password="test", two_factor="1112223333"):
         return self._client.post(
             "/auth/login",
-            data={"uname": username, "pword": password, "2fa": two_factor},
+            data={"username": username, "password": password, "two_factor": two_factor},
         )
 
     def logout(self):
