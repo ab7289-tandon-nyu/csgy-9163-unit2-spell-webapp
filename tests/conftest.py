@@ -13,7 +13,14 @@ with open(os.path.join(os.path.dirname(__file__), "data.sql"), "rb") as f:
 def app():
     db_fd, db_path = tempfile.mkstemp()
 
-    app = create_app({"TESTING": True, "DATABASE": db_path, "WTF_CSRF_ENABLED": False, "WTF_CSRF_METHODS": []})  # noqa: E231
+    app = create_app(
+        {
+            "TESTING": True,
+            "DATABASE": db_path,
+            "WTF_CSRF_ENABLED": False,
+            "WTF_CSRF_METHODS": [],
+        }
+    )  # noqa: E231
 
     with app.app_context():
         init_db()
