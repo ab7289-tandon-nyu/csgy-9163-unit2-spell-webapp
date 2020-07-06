@@ -23,7 +23,6 @@ bp = Blueprint("auth", __name__, url_prefix="/auth")
 def register():
     form = RegisterForm(request.form)
     if form.validate_on_submit():
-        print("success!")
         db = get_db()
         db.execute(
             "INSERT INTO user (username,password,two_factor) VALUES (?,?,?)",
@@ -37,7 +36,6 @@ def register():
         flash("Thank you for registering, you can now log in.", "success")
         return redirect(url_for("auth.login"))
     else:
-        print(f"oh no! {[error for error in form.errors]}")
         flash_errors(form)
     return render_template("auth/register.html", form=form)
 
