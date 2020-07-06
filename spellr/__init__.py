@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask
+from flask_wtf.csrf import CSRFProtect
 
 
 def create_app(test_config=None):
@@ -27,6 +28,10 @@ def create_app(test_config=None):
     from . import db
 
     db.init_app(app)
+
+    # init global CSRF protection
+    csrf = CSRFProtect()
+    csrf.init_app(app)
 
     # define blueprints
     from . import auth
