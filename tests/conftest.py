@@ -3,10 +3,10 @@ import tempfile
 
 import pytest
 from spellr import create_app
-from spellr.db import get_db, init_db
+from spellr.extensions import db as _db
+from spellr.models import User
 
-with open(os.path.join(os.path.dirname(__file__), "data.sql"), "rb") as f:
-    _data_sql = f.read().decode("utf8")
+from werkzeug.security import generate_password_hash
 
 
 @pytest.fixture
@@ -16,17 +16,25 @@ def app():
     app = create_app(
         {
             "TESTING": True,
-            "DATABASE": db_path,
+            # "SQLALCHEMY_DATABASE_URI": db_path,
+            "SQLALCHEMY_DATABASE_URI": f"sqlite:////{db_path}",
             "WTF_CSRF_ENABLED": False,
             "WTF_CSRF_METHODS": [],
         }
     )  # noqa: E231
 
     with app.app_context():
-        init_db()
-        get_db().executescript(_data_sql)
-
-    yield app
+        _db.create_all()
+        user = User(
+            username="test",
+            password=generate_password_hash("test"),
+            two_factor="1231231234",
+        )
+        _db.session.add(user)
+        _db.session.commit()
+        yield app
+        _db.session.remove()
+        _db.drop_all()
 
     os.close(db_fd)
     os.unlink(db_path)
@@ -46,7 +54,7 @@ class AuthActions(object):
     def __init__(self, client):
         self._client = client
 
-    def login(self, username="test", password="test", two_factor="1112223333"):
+    def login(self, username="test", password="test", two_factor="1231231234"):
         return self._client.post(
             "/auth/login",
             data={"username": username, "password": password, "two_factor": two_factor},
