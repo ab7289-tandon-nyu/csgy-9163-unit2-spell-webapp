@@ -7,10 +7,11 @@
 {% block content %}
     <div class="row">
         <form class="col s12" method="post">
+            {{ form.csrf_token }}
             <div class="row">
                 <div class="input-field col s12">
-                    <textarea id="inputtext" name="inputtext" class="materialize-textarea validate"></textarea>
-                    <label for="inputtext">Please enter your text</label>
+                    {{ form.inputtext.label }}
+                    {{ form.inputtext(class_="materialize-textarea validate") }}
                 </div>
             </div>
             <button class="btn waves-effect waves-light orange" type="submit" name="action">Check Spelling

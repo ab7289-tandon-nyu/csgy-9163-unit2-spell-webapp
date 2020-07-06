@@ -3,6 +3,7 @@ from flask import Blueprint, redirect, render_template, request, url_for
 import subprocess
 
 from spellr.auth import login_required
+from spellr.forms import SpellForm
 
 bp = Blueprint("spell", __name__)
 
@@ -10,10 +11,11 @@ bp = Blueprint("spell", __name__)
 @bp.route("/spell_check", methods=("GET", "POST"))
 @login_required
 def spell():
+    form = SpellForm(request.form)
     result = ""
     text = ""
-    if request.method == "POST":
-        text = request.form["inputtext"]
+    if form.validate_on_submit():
+        text = form.inputtext.data
         # do stuff with output
         with open(r"./spellr/input.txt", "r+") as f:
             f.truncate(0)
@@ -27,9 +29,8 @@ def spell():
             ]
         )
         result = result.decode("utf-8").strip()
-        # result = text
 
-    return render_template("spell/index.html", orig_text=text, result=result)
+    return render_template("spell/index.html", form=form, orig_text=text, result=result)
 
 
 @bp.route("/")

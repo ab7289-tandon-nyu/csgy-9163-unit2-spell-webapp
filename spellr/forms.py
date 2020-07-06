@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, ValidationError
+from wtforms import StringField, PasswordField, ValidationError, TextAreaField
 import phonenumbers
 from wtforms.validators import DataRequired, Length
 from werkzeug.security import check_password_hash
@@ -100,3 +100,11 @@ class RegisterForm(FlaskForm):
             )
             return False
         return True
+
+
+class SpellForm(FlaskForm):
+
+    inputtext = TextAreaField("Please enter your text", validators=[DataRequired()])
+
+    def __init__(self, *args, **kwargs):
+        super(SpellForm, self).__init__(*args, **kwargs)
