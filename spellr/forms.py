@@ -2,9 +2,8 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, ValidationError, TextAreaField
 import phonenumbers
 from wtforms.validators import DataRequired, Length
-from werkzeug.security import check_password_hash
 
-from spellr.db import get_db
+from spellr.models import User
 
 
 class LoginForm(FlaskForm):
@@ -26,18 +25,13 @@ class LoginForm(FlaskForm):
         if not initial_validation:
             return False
 
-        db = get_db()
-        self.user = db.execute(
-            "SELECT * FROM user WHERE username = ?", (self.username.data,)
-        ).fetchone()
+        self.user = User.query.filter_by(username=self.username.data).first()
 
-        if not self.user or not check_password_hash(
-            self.user["password"], self.password.data
-        ):
+        if not self.user.check_password(self.password.data):
             self.username.errors.append("Incorrect username or password")
             return False
 
-        if not self.user["two_factor"] == self.two_factor.data:
+        if not self.user.check_two_factor(self.two_factor.data):
             self.two_factor.errors.append("Two-factor auth device failure")
             return False
         return True
@@ -88,13 +82,7 @@ class RegisterForm(FlaskForm):
         if not initial_validation:
             return False
 
-        db = get_db()
-        if (
-            db.execute(
-                "SELECT id FROM user WHERE username = ?", (self.username.data,)
-            ).fetchone()
-            is not None
-        ):
+        if User.query.filter_by(username=self.username.data).first() is not None:
             self.username.errors.append(
                 f"User {self.username.data} is already registered."
             )

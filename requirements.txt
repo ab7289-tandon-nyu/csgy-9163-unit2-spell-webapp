@@ -1,5 +1,7 @@
 flask
 Flask-WTF
+flask-login
+Flask-SQLAlchemy
 phonenumbers
 tox
 pytest
@@ -8,3 +10,4 @@ black
 mock
 flake8
 coveralls
+factory-boy

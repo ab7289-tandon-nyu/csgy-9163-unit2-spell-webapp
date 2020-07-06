@@ -12,7 +12,8 @@ from flask import (
 )
 from werkzeug.security import generate_password_hash
 
-from spellr.db import get_db
+from spellr.extensions import db
+from spellr.models import User
 from spellr.util import flash_errors
 from spellr.forms import RegisterForm, LoginForm
 
@@ -23,16 +24,13 @@ bp = Blueprint("auth", __name__, url_prefix="/auth")
 def register():
     form = RegisterForm(request.form)
     if form.validate_on_submit():
-        db = get_db()
-        db.execute(
-            "INSERT INTO user (username,password,two_factor) VALUES (?,?,?)",
-            (
-                form.username.data,
-                generate_password_hash(form.password.data),
-                form.two_factor.data,
-            ),
+        new_user = User(
+            username=form.username.data,
+            password=generate_password_hash(form.password.data),
+            two_factor=form.two_factor.data,
         )
-        db.commit()
+        db.session.add(new_user)
+        db.session.commit()
         flash("Thank you for registering, you can now log in.", "success")
         return redirect(url_for("auth.login"))
     else:
@@ -45,7 +43,7 @@ def login():
     form = LoginForm(request.form)
     if form.validate_on_submit():
         session.clear()
-        session["user_id"] = form.user["id"]
+        session["user_id"] = form.user.id
         flash("You are logged in.", "success")
         return redirect(url_for("index"))
     else:
@@ -60,9 +58,7 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        g.user = (
-            get_db().execute("SELECT * FROM user WHERE id = ?", (user_id,)).fetchone()
-        )
+        g.user = User.query.get(user_id)
 
 
 @bp.route("/logout")
