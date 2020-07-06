@@ -16,7 +16,6 @@ def app():
     app = create_app(
         {
             "TESTING": True,
-            # "SQLALCHEMY_DATABASE_URI": db_path,
             "SQLALCHEMY_DATABASE_URI": f"sqlite:////{db_path}",
             "WTF_CSRF_ENABLED": False,
             "WTF_CSRF_METHODS": [],
