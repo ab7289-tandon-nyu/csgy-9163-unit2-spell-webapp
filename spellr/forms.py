@@ -12,8 +12,8 @@ class LoginForm(FlaskForm):
     username = StringField("Username", validators=[DataRequired()], id="uname")
     password = PasswordField("Password", validators=[DataRequired()], id="pword")
     two_factor = StringField(
-        "Two Factor Auth Device", validators=[DataRequired()], id="2fa"
-    )
+        "Two Factor Auth Device", id="2fa", validators=[DataRequired()]
+    )  # optionally could also looking at using wtforms.fields.html5.TelField
 
     def __init__(self, *args, **kwargs):
         """Create instance."""
@@ -58,7 +58,7 @@ class RegisterForm(FlaskForm):
         id="pword",
         validators=[
             DataRequired(message="Failure, Password is required."),
-            Length(min=6, max=128),
+            Length(min=4, max=128),
         ],
     )
     two_factor = StringField(
