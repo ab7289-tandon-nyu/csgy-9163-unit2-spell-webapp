@@ -53,7 +53,7 @@ def test_login(client, auth):
     (
         ("a", "test", "1112223333", b"Incorrect username or password"),
         ("test", "a", "1112223333", b"Incorrect username or password"),
-        ("test", "test", "1", b"Two factor auth device failure"),
+        ("test", "test", "1", b"Two-factor auth device failure"),
         ("", "test", "1", b""),
     ),
 )
