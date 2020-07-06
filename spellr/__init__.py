@@ -1,14 +1,18 @@
 import os
 
 from flask import Flask
-from flask_wtf.csrf import CSRFProtect
+from spellr.extensions import db, csrf
 
 
 def create_app(test_config=None):
     #  create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
-        SECRET_KEY="dev", DATABASE=os.path.join(app.instance_path, "spellr.sqlite")
+        SECRET_KEY="dev",
+        # DATABASE=os.path.join(app.instance_path, "spellr.sqlite",
+        SQLALCHEMY_DATABASE_URI="sqlite:////tmp/spellr.sqlite",
+        SQLALCHEMY_ECHO=False,
+        SQLALCHEMY_TRACK_MODIFICATIONS=False,
     )
 
     if test_config is None:
@@ -25,13 +29,13 @@ def create_app(test_config=None):
         pass
 
     # include db
-    from . import db
-
     db.init_app(app)
 
     # init global CSRF protection
-    csrf = CSRFProtect()
     csrf.init_app(app)
+
+    # init flask-login
+    # login_manager.init_app(app)
 
     # define blueprints
     from . import auth
@@ -43,4 +47,8 @@ def create_app(test_config=None):
     app.register_blueprint(spell.bp)
 
     app.add_url_rule("/", endpoint="index")
+
+    with app.app_context():
+        db.create_all()
+
     return app

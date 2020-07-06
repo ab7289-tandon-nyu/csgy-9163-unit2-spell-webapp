@@ -1,6 +1,6 @@
 import pytest
 from flask import g, session
-from spellr.db import get_db
+from spellr.models import User
 
 
 def test_register(client, app):
@@ -12,10 +12,7 @@ def test_register(client, app):
     assert "/auth/login" in response.headers.get("Location")
 
     with app.app_context():
-        assert (
-            get_db().execute("select * from user where username = 'aaa'",).fetchone()
-            is not None
-        )
+        assert User.query.filter_by(username="aaa").first() is not None
 
 
 @pytest.mark.parametrize(
@@ -45,14 +42,14 @@ def test_login(client, auth):
     with client:
         client.get("/")
         assert session["user_id"] == 1
-        assert g.user["username"] == "test"
+        assert g.user.username == "test"
 
 
 @pytest.mark.parametrize(
     ("username", "password", "two_factor", "message"),
     (
-        ("a", "test", "1112223333", b"Incorrect username or password"),
-        ("test", "a", "1112223333", b"Incorrect username or password"),
+        ("a", "test", "1231231234", b"Incorrect username or password"),
+        ("test", "a", "1231231234", b"Incorrect username or password"),
         ("test", "test", "1", b"Two-factor auth device failure"),
         ("", "test", "1", b""),
     ),
