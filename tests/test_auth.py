@@ -1,5 +1,5 @@
 import pytest
-from flask import g, session
+from flask import session
 from spellr.models import User
 
 
@@ -41,8 +41,7 @@ def test_login(client, auth):
 
     with client:
         client.get("/")
-        assert session["user_id"] == 1
-        assert g.user.username == "test"
+        assert session["_user_id"] == "1"
 
 
 @pytest.mark.parametrize(

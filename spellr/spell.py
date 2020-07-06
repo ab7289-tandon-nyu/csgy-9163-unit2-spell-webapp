@@ -2,10 +2,22 @@ from flask import Blueprint, redirect, render_template, request, url_for
 
 import subprocess
 
-from spellr.auth import login_required
+from flask_login import login_required
+from spellr.extensions import login_manager
 from spellr.forms import SpellForm
+from spellr.models import User
 
 bp = Blueprint("spell", __name__)
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+
+@login_manager.unauthorized_handler
+def unauthorized_callback():
+    return redirect(url_for("auth.login"))
 
 
 @bp.route("/spell_check", methods=("GET", "POST"))

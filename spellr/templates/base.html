@@ -16,8 +16,8 @@
         <nav class="light-blue lighten-1" role="navigation">
             <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Spellr</a>
                 <ul class="right hide-on-med-and-down">
-                    {% if g.user %}
-                        <li><span>{{ g.user['username'] }}</span>
+                    {% if current_user.is_authenticated %}
+                        <li><span>{{ current_user.username }}</span>
                         <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
                     {% else %}
                         <li><a href="{{ url_for('auth.register') }}">Register</a>
@@ -26,8 +26,8 @@
                 </ul>
 
                 <ul id="nav-mobile" class="sidenav">
-                    {% if g.user %}
-                        <li><span>{{ g.user['username'] }}</span>
+                    {% if current_user.is_authenticated %}
+                        <li><span>{{ current_user.username }}</span>
                         <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
                     {% else %}
                         <li><a href="{{ url_for('auth.register') }}">Register</a>
