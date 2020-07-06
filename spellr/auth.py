@@ -10,79 +10,46 @@ from flask import (
     session,
     url_for,
 )
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import generate_password_hash
 
 from spellr.db import get_db
-from spellr.util import get_flash_msg
+from spellr.util import flash_errors
+from spellr.forms import RegisterForm, LoginForm
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 
 @bp.route("/register", methods=("GET", "POST"))
 def register():
-    if request.method == "POST":
-        username = request.form["uname"]
-        password = request.form["pword"]
-        two_factor = request.form["2fa"]
+    form = RegisterForm(request.form)
+    if form.validate_on_submit():
         db = get_db()
-        error = None
-        success = None
-
-        if not username:
-            error = "Failure, Username is required."
-        elif not password:
-            error = "Failure, Password is required."
-        elif not two_factor:
-            error = "Failure, Two Factor Auth device is required."
-        elif (
-            db.execute("SELECT id FROM user WHERE username = ?", (username,)).fetchone()
-            is not None
-        ):
-            error = "User {} is already registered.".format(username)
-
-        if error is None:
-            db.execute(
-                "INSERT INTO user (username,password,two_factor) VALUES (?,?,?)",
-                (username, generate_password_hash(password), two_factor),
-            )
-            db.commit()
-            success = "Success!"
-            flash(*get_flash_msg(error=error, success=success))
-            return redirect(url_for("auth.login"))
-
-        flash(*get_flash_msg(error=error, success=success))
+        db.execute(
+            "INSERT INTO user (username,password,two_factor) VALUES (?,?,?)",
+            (
+                form.username.data,
+                generate_password_hash(form.password.data),
+                form.two_factor.data,
+            ),
+        )
+        db.commit()
+        flash("Thank you for registering, you can now log in.", "success")
+        return redirect(url_for("auth.login"))
+    else:
+        flash_errors(form)
     return render_template("auth/register.html")
 
 
 @bp.route("/login", methods=("GET", "POST"))
 def login():
-    if request.method == "POST":
-        username = request.form["uname"]
-        password = request.form["pword"]
-        two_factor = request.form["2fa"]
-        db = get_db()
-        error = None
-        success = None
-
-        user = db.execute(
-            "SELECT * FROM user WHERE username = ?", (username,)
-        ).fetchone()
-
-        if user is None:
-            error = "Incorrect username."
-        elif not check_password_hash(user["password"], password):
-            error = "Incorrect password."
-        elif not user["two_factor"] == two_factor:
-            error = "Two Factor Device failure."
-
-        if error is None:
-            session.clear()
-            session["user_id"] = user["id"]
-            success = "Success!"
-            flash(*get_flash_msg(error=error, success=success))
-            return redirect(url_for("index"))
-
-        flash(*get_flash_msg(error=error, success=success))
+    form = LoginForm(request.form)
+    if form.validate_on_submit():
+        session.clear()
+        session["user_id"] = form.user["id"]
+        flash("You are logged in.", "success")
+        return redirect(url_for("index"))
+    else:
+        flash_errors(form)
     return render_template("auth/login.html")
 
 
