@@ -8,7 +8,7 @@ setup(
     zip_safe=False,
     install_requires=[
         "flask",
-        "SQLAlchemy",
+        "Flask-SQLAlchemy",
         "tox",
         "Flask-WTF",
         "flask-login",
