@@ -12,8 +12,11 @@ def create_app(test_config=None):
         SECRET_KEY="dev",
         # DATABASE=os.path.join(app.instance_path, "spellr.sqlite",
         SQLALCHEMY_DATABASE_URI="sqlite:////tmp/spellr.sqlite",
+        # turned off for performance
         SQLALCHEMY_ECHO=False,
+        # turned off for performance
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
+        # set to a short time for demonstration purposes
         PERMANENT_SESSION_LIFETIME=timedelta(minutes=2),
     )
 
@@ -58,8 +61,13 @@ def create_app(test_config=None):
 
     app.register_blueprint(spell.bp)
 
+    # since we don't have a view defined for '/' and /spell_check
+    # is the main point after login, define a rule to route any requests
+    # to the base URI to index, which resolves to /spellr
     app.add_url_rule("/", endpoint="index")
 
+    # since we are outside of a request context, using app.app_context()
+    # allows us to use the db variable to create the database schema
     with app.app_context():
         db.create_all()
 
