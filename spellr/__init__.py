@@ -2,7 +2,7 @@ import os
 
 from flask import Flask
 from datetime import timedelta
-from spellr.extensions import db, csrf, login_manager
+from spellr.extensions import db, csrf, login_manager, talisman
 
 
 def create_app(test_config=None):
@@ -35,6 +35,15 @@ def create_app(test_config=None):
 
     # init global CSRF protection
     csrf.init_app(app)
+
+    # init xss protection
+    csp = {
+        "default-src": "'self'",
+        "style-src": ["'self'", "fonts.googleapis.com"],
+        "font-src": ["'self'", "fonts.gstatic.com"],
+        "script-src": ["'self'", "code.jquery.com"],
+    }
+    talisman.init_app(app, content_security_policy=csp)
 
     # init flask-login
     login_manager.session_protection = "strong"
