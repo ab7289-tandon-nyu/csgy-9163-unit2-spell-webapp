@@ -8,7 +8,5 @@ tox
 pytest
 coverage
 black
-mock
 flake8
 coveralls
-factory-boy
