@@ -15,8 +15,5 @@ setup(
         "flask-talisman",
         "phonenumbers",
         "pytest",
-        "coverage",
-        "black",
-        "flake8",
     ],  # noqa: E231
 )
