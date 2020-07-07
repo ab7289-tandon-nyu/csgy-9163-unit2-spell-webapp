@@ -37,7 +37,13 @@ def create_app(test_config=None):
     csrf.init_app(app)
 
     # init xss protection
-    talisman.init_app(app)
+    csp = {
+        "default-src": "'self'",
+        "style-src": ["'self'", "fonts.googleapis.com"],
+        "font-src": ["'self'", "fonts.gstatic.com"],
+        "script-src": ["'self'", "code.jquery.com"],
+    }
+    talisman.init_app(app, content_security_policy=csp)
 
     # init flask-login
     login_manager.session_protection = "strong"
