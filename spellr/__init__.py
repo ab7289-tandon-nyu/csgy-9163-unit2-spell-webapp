@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask
+from datetime import timedelta
 from spellr.extensions import db, csrf, login_manager
 
 
@@ -13,6 +14,7 @@ def create_app(test_config=None):
         SQLALCHEMY_DATABASE_URI="sqlite:////tmp/spellr.sqlite",
         SQLALCHEMY_ECHO=False,
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
+        PERMANENT_SESSION_LIFETIME=timedelta(minutes=2),
     )
 
     if test_config is None:
@@ -35,6 +37,7 @@ def create_app(test_config=None):
     csrf.init_app(app)
 
     # init flask-login
+    login_manager.session_protection = "strong"
     login_manager.init_app(app)
 
     # define blueprints

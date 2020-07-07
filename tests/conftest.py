@@ -6,8 +6,6 @@ from spellr import create_app
 from spellr.extensions import db as _db
 from spellr.models import User
 
-from werkzeug.security import generate_password_hash
-
 
 @pytest.fixture
 def app():
@@ -25,11 +23,8 @@ def app():
 
     with app.app_context():
         _db.create_all()
-        user = User(
-            username="test",
-            password=generate_password_hash("test"),
-            two_factor="1231231234",
-        )
+        user = User(username="test", two_factor="1231231234",)
+        user.set_password("test")
         _db.session.add(user)
         _db.session.commit()
         yield app

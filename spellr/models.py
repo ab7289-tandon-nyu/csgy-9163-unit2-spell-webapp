@@ -1,5 +1,5 @@
 from spellr.extensions import db
-from werkzeug.security import check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import UserMixin
 
 
@@ -11,6 +11,9 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(25), index=False, unique=True, nullable=False)
     password = db.Column(db.String(256), nullable=True)
     two_factor = db.Column(db.String(10), index=False, unique=False, nullable=False)
+
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
 
     def check_password(self, value):
         return check_password_hash(self.password, value)
