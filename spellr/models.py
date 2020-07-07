@@ -13,9 +13,11 @@ class User(db.Model, UserMixin):
     two_factor = db.Column(db.String(10), index=False, unique=False, nullable=False)
 
     def set_password(self, password):
+        """ convenience function to generate the hashed user password """
         self.password = generate_password_hash(password)
 
     def check_password(self, value):
+        """ convenience function to check that the supplied password matches the hash """
         return check_password_hash(self.password, value)
 
     def check_two_factor(self, value):

@@ -10,6 +10,7 @@ def get_flash_msg(error=None, success=None):
 
 
 def flash_errors(form, category="error"):
+    """ convenience function to send form errors to the front end """
     for field, errors in form.errors.items():
         for error in errors:
             flash(f"{getattr(form, field).label.text} - {error}", category)

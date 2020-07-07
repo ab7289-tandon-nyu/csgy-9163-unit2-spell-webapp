@@ -5,6 +5,8 @@ from wtforms.validators import DataRequired, Length
 
 from spellr.models import User
 
+# Flask-WTF form definitions. These aide in form validation
+
 
 class LoginForm(FlaskForm):
 
@@ -68,6 +70,8 @@ class RegisterForm(FlaskForm):
         self.user = None
 
     def validate_two_factor(form, field):
+        """ handy function to validate that the value input in the Two Factor
+        field is a valid US phone Number """
         try:
             input_number = phonenumbers.parse(field.data, region="US")
             if not phonenumbers.is_possible_number(input_number):
@@ -82,6 +86,7 @@ class RegisterForm(FlaskForm):
         if not initial_validation:
             return False
 
+        # check to make sure that the specified username hasn't already been registered
         if User.query.filter_by(username=self.username.data).first() is not None:
             self.username.errors.append(
                 f"User {self.username.data} is already registered."
