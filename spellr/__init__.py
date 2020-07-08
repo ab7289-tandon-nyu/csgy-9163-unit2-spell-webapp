@@ -18,6 +18,9 @@ def create_app(test_config=None):
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
         # set to a short time for demonstration purposes
         PERMANENT_SESSION_LIFETIME=timedelta(minutes=2),
+        # sets the SameSite cookie option to restrict how cookies are
+        # sent with requests from external sites
+        SESSION_COOKIE_SAMESITE="Lax",
     )
 
     if test_config is None:
