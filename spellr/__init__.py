@@ -48,6 +48,7 @@ def create_app(test_config=None):
         "style-src": ["'self'", "fonts.googleapis.com"],
         "font-src": ["'self'", "fonts.gstatic.com"],
         "script-src": ["'self'", "code.jquery.com"],
+        "frame-ancestors": "'none'",
     }
     talisman.init_app(app, content_security_policy=csp)
 
