@@ -8,7 +8,7 @@ from flask import (
     session,
     current_app,
 )
-from flask_login import login_required, login_user, logout_user, current_user
+from flask_login import login_required, login_user, logout_user
 from flask_principal import Identity, AnonymousIdentity, identity_changed
 
 from spellr.extensions import db, login_manager
@@ -84,9 +84,16 @@ def logout():
     """ log the user out """
     # handy-dandy convenience function from Flask-Login to log the user out and invalidate
     # their session
+    print(f"session: {session}")
     logout_user()
 
     # remove session keys set by Flask-Principal
+    for key in ("identity.id", "identity.auth_type"):
+        session.pop(key, None)
+
+    print(f"after pop: {session}")
+
+    # tell flask-principal the user is anonymous
     identity_changed.send(
         current_app._get_current_object(), identity=AnonymousIdentity()
     )
