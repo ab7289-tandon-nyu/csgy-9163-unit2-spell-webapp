@@ -4,6 +4,7 @@ from flask import Flask
 from flask_principal import Principal
 from datetime import timedelta
 from spellr.extensions import db, csrf, login_manager, talisman
+from spellr.models import User, Role
 
 
 def create_app(test_config=None):
@@ -78,5 +79,19 @@ def create_app(test_config=None):
     # allows us to use the db variable to create the database schema
     with app.app_context():
         db.create_all()
+
+        # create default roles
+        user_role = Role(name="user")
+        admin_role = Role(name="admin")
+        db.session.add(user_role)
+        db.session.add(admin_role)
+
+        admin_user = User(username="admin", two_factor="1231231234")
+        admin_user.set_password("password")
+        admin_user.roles.append(user_role)
+        admin_user.roles.append(admin_role)
+
+        db.session.add(admin_user)
+        db.session.commit()
 
     return app
