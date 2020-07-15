@@ -26,7 +26,7 @@ def test_register(client, app):
         ("test", "test", "abc", b"Failure, invalid phone number."),
     ),
 )
-def test_register_validate_input(client, username, password, two_factor, message):
+def test_register_validate_input(app, client, username, password, two_factor, message):
     response = client.post(
         "/auth/register",
         data={"username": username, "password": password, "two_factor": two_factor},

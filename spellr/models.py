@@ -1,6 +1,7 @@
 from spellr.extensions import db
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import UserMixin
+from sqlalchemy import event
 
 role_association = db.Table(
     "user_role_mtom",
@@ -37,6 +38,15 @@ class User(db.Model, UserMixin):
 
     def __repr__(self):
         return f"<User {self.username}>"
+
+
+@event.listens_for(User, "init")
+def receive_init(target, args, kwargs):
+    """listen for the User model's init event"""
+
+    # when a new user is created, add the 'user' role to them by default
+    user_role = Role.query.filter_by(name="user").first()
+    target.roles.append(user_role)
 
 
 class Role(db.Model):

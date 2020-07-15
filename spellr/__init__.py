@@ -83,17 +83,26 @@ def create_app(test_config=None):
         db.create_all()
 
         # create default roles
-        user_role = Role(name="user")
-        admin_role = Role(name="admin")
-        db.session.add(user_role)
-        db.session.add(admin_role)
+        commit = False
+        if Role.query.filter_by(name="user").count() == 0:
+            user_role = Role(name="user")
+            db.session.add(user_role)
+            commit = True
+        admin_role = Role.query.filter_by(name="admin").first()
+        if not admin_role:
+            admin_role = Role(name="admin")
+            db.session.add(admin_role)
+            commit = True
+        if commit:
+            db.session.commit()
 
-        admin_user = User(username="admin", two_factor="1231231234")
-        admin_user.set_password("password")
-        admin_user.roles.append(user_role)
-        admin_user.roles.append(admin_role)
+        if User.query.filter_by(username="admin").count() == 0:
+            admin_user = User(username="admin", two_factor="1231231234")
+            admin_user.set_password("password")
+            # admin_user.roles.append(user_role)
+            admin_user.roles.append(admin_role)
 
-        db.session.add(admin_user)
-        db.session.commit()
+            db.session.add(admin_user)
+            db.session.commit()
 
     return app
