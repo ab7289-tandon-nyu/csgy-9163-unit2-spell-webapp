@@ -89,4 +89,3 @@ def temp_dir():
     # finally destroy the temp directories we created
     os.close(db_fd)
     os.unlink(db_path)
-

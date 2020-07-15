@@ -41,8 +41,8 @@ def test_login(client, auth):
 
     with client:
         client.get("/")
-        assert session["_user_id"] == "1"
-        assert session["identity.id"] == 1
+        assert session["_user_id"] == "2"
+        assert session["identity.id"] == 2
 
 
 @pytest.mark.parametrize(
@@ -65,6 +65,6 @@ def test_logout(client, auth):
     with client:
         auth.logout()
         assert "_user_id" not in session
-        # verify flask-principal session keys have been remove
+        # verify flask-principal session keys have been removed
         assert session.get("identity.id") is None
         assert session.get("identity.auth_type") is None
