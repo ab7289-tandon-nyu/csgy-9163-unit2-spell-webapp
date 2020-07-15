@@ -65,6 +65,6 @@ def test_logout(client, auth):
     with client:
         auth.logout()
         assert "_user_id" not in session
-        # verify flask-principal session keys have been removed
+        # verify flask-principal session keys have been remove
         assert session.get("identity.id") is None
         assert session.get("identity.auth_type") is None
