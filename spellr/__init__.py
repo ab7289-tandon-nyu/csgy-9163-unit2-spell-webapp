@@ -13,7 +13,7 @@ def create_app(test_config=None):
     app.config.from_mapping(
         SECRET_KEY="dev",
         # DATABASE=os.path.join(app.instance_path, "spellr.sqlite",
-        SQLALCHEMY_DATABASE_URI="sqlite:////tmp/spellr.sqlite",
+        SQLALCHEMY_DATABASE_URI=os.getenv("DATABASE_URL", "sqlite:////tmp/spellr.sqlite"),
         # turned off for performance
         SQLALCHEMY_ECHO=False,
         # turned off for performance

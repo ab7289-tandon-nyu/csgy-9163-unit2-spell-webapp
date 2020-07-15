@@ -78,3 +78,15 @@ class AuthActions(object):
 def auth(client):
     """ fixture to provide the AuthActions class to tests """
     return AuthActions(client)
+
+
+@pytest.fixture
+def temp_dir():
+    db_fd, db_path = tempfile.mkstemp()
+
+    yield db_path
+
+    # finally destroy the temp directories we created
+    os.close(db_fd)
+    os.unlink(db_path)
+
