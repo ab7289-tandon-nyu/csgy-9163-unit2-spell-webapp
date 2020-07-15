@@ -3,6 +3,7 @@ Flask-WTF
 flask-login
 Flask-SQLAlchemy
 flask-talisman
+Flask-Principal
 phonenumbers
 tox
 pytest

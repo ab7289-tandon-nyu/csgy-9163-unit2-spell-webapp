@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask
+from flask_principal import Principal
 from datetime import timedelta
 from spellr.extensions import db, csrf, login_manager, talisman
 
@@ -55,6 +56,9 @@ def create_app(test_config=None):
     # init flask-login
     login_manager.session_protection = "strong"
     login_manager.init_app(app)
+
+    # init flask-principal
+    Principal(app)
 
     # define blueprints
     from . import auth

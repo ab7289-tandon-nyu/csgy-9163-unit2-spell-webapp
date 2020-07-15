@@ -1,5 +1,15 @@
-from flask import Blueprint, flash, redirect, render_template, request, url_for, session
-from flask_login import login_required, login_user, logout_user
+from flask import (
+    Blueprint,
+    flash,
+    redirect,
+    render_template,
+    request,
+    url_for,
+    session,
+    current_app,
+)
+from flask_login import login_required, login_user, logout_user, current_user
+from flask_principal import Identity, AnonymousIdentity, identity_changed
 
 from spellr.extensions import db, login_manager
 from spellr.models import User
@@ -56,6 +66,11 @@ def login():
         # handy-dandy convenience function from Flask-Login to log in the user and add them
         # to the session
         login_user(form.user)
+
+        # Tell flask-principal that the identity has changed
+        identity_changed.send(
+            current_app._get_current_object(), identity=Identity(form.user.id)
+        )
         flash("You are logged in.", "success")
         return redirect(url_for("index"))
     else:
@@ -70,4 +85,9 @@ def logout():
     # handy-dandy convenience function from Flask-Login to log the user out and invalidate
     # their session
     logout_user()
+
+    # remove session keys set by Flask-Principal
+    identity_changed.send(
+        current_app._get_current_object(), identity=AnonymousIdentity()
+    )
     return redirect(url_for("auth.login"))
