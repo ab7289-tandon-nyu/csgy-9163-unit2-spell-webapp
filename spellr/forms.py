@@ -101,3 +101,15 @@ class SpellForm(FlaskForm):
 
     def __init__(self, *args, **kwargs):
         super(SpellForm, self).__init__(*args, **kwargs)
+
+
+class HistoryForm(FlaskForm):
+
+    userquery = StringField(
+        "Enter the username",
+        id="userquery",
+        validators=[DataRequired(), Length(min=3, max=25)],
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(HistoryForm, self).__init__(*args, **kwargs)

@@ -67,4 +67,3 @@ class Question(db.Model):
     result = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     user = db.relationship("User", back_populates="questions")
-

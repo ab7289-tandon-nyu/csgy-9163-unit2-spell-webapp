@@ -16,7 +16,7 @@ from flask_principal import (
     identity_loaded,
     RoleNeed,
     UserNeed,
-    Permission,
+    # Permission,
 )
 
 from spellr.extensions import db, login_manager

@@ -64,7 +64,6 @@ class TestRoles:
 
 @pytest.mark.usefixtures("app")
 class TestQuestions:
-
     def test_question(self):
         test_user = User.query.filter_by(username="test").one()
         q = Question(text="some text", result="no errors")
@@ -88,4 +87,3 @@ class TestQuestions:
         q_user = User.query.get(q.user.id)
 
         assert q_user == test_user
-        

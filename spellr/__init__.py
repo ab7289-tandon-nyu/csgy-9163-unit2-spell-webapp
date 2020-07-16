@@ -72,6 +72,10 @@ def create_app(test_config=None):
 
     app.register_blueprint(spell.bp)
 
+    from . import history
+
+    app.register_blueprint(history.bp)
+
     # since we don't have a view defined for '/' and /spell_check
     # is the main point after login, define a rule to route any requests
     # to the base URI to index, which resolves to /spellr
