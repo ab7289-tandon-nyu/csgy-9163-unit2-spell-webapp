@@ -2,8 +2,10 @@ from flask import Blueprint, redirect, render_template, request, url_for
 
 import subprocess
 
-from flask_login import login_required
+from flask_login import login_required, current_user
+from spellr.extensions import db
 from spellr.forms import SpellForm
+from spellr.models import Question
 
 bp = Blueprint("spell", __name__)
 
@@ -37,6 +39,11 @@ def spell():
         )
         # decode the returned text so that we can read it nicely
         result = result.decode("utf-8").strip()
+
+        # persist the user's question
+        q = Question(text=text, result=result, user_id=current_user.id)
+        db.session.add(q)
+        db.session.commit()
 
     return render_template("spell/index.html", form=form, orig_text=text, result=result)
 
