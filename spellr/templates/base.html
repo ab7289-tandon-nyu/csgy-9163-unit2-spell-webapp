@@ -14,10 +14,12 @@
     </head>
     <body>
         <nav class="light-blue lighten-1" role="navigation">
-            <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Spellr</a>
+            <div class="nav-wrapper container"><a id="logo-container" href="/" class="brand-logo">Spellr</a>
                 <ul class="right hide-on-med-and-down">
                     {% if current_user.is_authenticated %}
-                        <li><span>{{ current_user.username }}</span>
+                        <li><a href="{{ url_for('spell.spell') }}">Spellr</a>
+                        <li><a href="{{ url_for('history.history') }}">History</a>
+                        <li><span>Welcome, {{ current_user.username }}</span>
                         <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
                     {% else %}
                         <li><a href="{{ url_for('auth.register') }}">Register</a>
@@ -28,6 +30,8 @@
                 <ul id="nav-mobile" class="sidenav">
                     {% if current_user.is_authenticated %}
                         <li><span>{{ current_user.username }}</span>
+                        <li><a href="{{ url_for('spell.spell') }}">Spellr</a>
+                        <li><a href="{{ url_for('history.history') }}">History</a>
                         <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
                     {% else %}
                         <li><a href="{{ url_for('auth.register') }}">Register</a>
