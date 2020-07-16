@@ -24,6 +24,7 @@ class User(db.Model, UserMixin):
         lazy="subquery",
         backref=db.backref("users", lazy=True),
     )
+    questions = db.relationship("Question", back_populates="user")
 
     def set_password(self, password):
         """ convenience function to generate the hashed user password """
@@ -55,3 +56,15 @@ class Role(db.Model):
     __tablename__ = "roles"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(25), unique=True, nullable=False)
+
+
+class Question(db.Model):
+    """Data model for user's previous questions."""
+
+    __tablename__ = "questions"
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.Text)
+    result = db.Column(db.Text)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    user = db.relationship("User", back_populates="questions")
+
