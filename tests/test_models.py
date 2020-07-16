@@ -1,6 +1,6 @@
 import pytest
 
-from spellr.models import User, Role
+from spellr.models import User, Role, Question
 from spellr.extensions import db
 
 
@@ -60,3 +60,32 @@ class TestRoles:
 
         assert found_role.name == "test_role"
         assert found_role == new_role
+
+
+@pytest.mark.usefixtures("app")
+class TestQuestions:
+
+    def test_question(self):
+        test_user = User.query.filter_by(username="test").one()
+        q = Question(text="some text", result="no errors")
+        test_user.questions.append(q)
+
+        db.session.add(q)
+        db.session.commit()
+
+        q_list = Question.query.filter_by(user_id=test_user.id).one()
+
+        assert q_list == q
+
+    def test_question_backref(self):
+        test_user = User.query.filter_by(username="test").one()
+        q = Question(text="some text", result="no errors")
+        test_user.questions.append(q)
+
+        db.session.add(q)
+        db.session.commit()
+
+        q_user = User.query.get(q.user.id)
+
+        assert q_user == test_user
+        
