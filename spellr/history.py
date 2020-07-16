@@ -17,7 +17,7 @@ bp = Blueprint("history", __name__)
 def history():
     """ route for authenticated users to review their question history """
     q_list = []
-    user_exists = True
+    user_exists = False
     user_id = None
 
     form = HistoryForm(request.form)

@@ -17,6 +17,7 @@ class TestUser:
 
         assert new_user.password != "password"
         assert new_user.check_password("password") is True
+        assert new_user.__repr__() == "<User new_user>"
 
     def test_save(self):
         new_user = User(username="new_user", two_factor="1231231234")
