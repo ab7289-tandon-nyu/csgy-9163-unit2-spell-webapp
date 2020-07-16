@@ -8,8 +8,16 @@ from flask import (
     session,
     current_app,
 )
-from flask_login import login_required, login_user, logout_user
-from flask_principal import Identity, AnonymousIdentity, identity_changed
+from flask_login import login_required, login_user, logout_user, current_user
+from flask_principal import (
+    Identity,
+    AnonymousIdentity,
+    identity_changed,
+    identity_loaded,
+    RoleNeed,
+    UserNeed,
+    Permission,
+)
 
 from spellr.extensions import db, login_manager
 from spellr.models import User
@@ -71,6 +79,7 @@ def login():
         identity_changed.send(
             current_app._get_current_object(), identity=Identity(form.user.id)
         )
+        print(f"current_user: {current_user.__dict__}")
         flash("You are logged in.", "success")
         return redirect(url_for("index"))
     else:
@@ -98,3 +107,20 @@ def logout():
         current_app._get_current_object(), identity=AnonymousIdentity()
     )
     return redirect(url_for("auth.login"))
+
+
+@identity_loaded.connect
+def on_identity_loaded(sender, identity):
+    """ load user roles when they log in """
+    # set the identity user object
+    identity.user = current_user
+
+    # ad the userNeed to the identity
+    if hasattr(current_user, "id"):
+        identity.provides.add(UserNeed(current_user.id))
+
+    # Assuming the User model has a list of roles, update
+    # the identity with the roles that the user provides
+    if hasattr(current_user, "roles"):
+        for role in current_user.roles:
+            identity.provides.add(RoleNeed(role.name))
