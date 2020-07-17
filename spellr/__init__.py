@@ -2,7 +2,8 @@ import os
 
 from flask import Flask
 from flask_principal import Principal
-from datetime import timedelta
+
+# from datetime import timedelta
 from spellr.extensions import db, csrf, login_manager, talisman
 from spellr.models import User, Role
 
@@ -21,7 +22,7 @@ def create_app(test_config=None):
         # turned off for performance
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
         # set to a short time for demonstration purposes
-        PERMANENT_SESSION_LIFETIME=timedelta(minutes=2),
+        # PERMANENT_SESSION_LIFETIME=timedelta(minutes=2),
         # sets the SameSite cookie option to restrict how cookies are
         # sent with requests from external sites
         SESSION_COOKIE_SAMESITE="Lax",
