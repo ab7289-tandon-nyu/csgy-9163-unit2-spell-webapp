@@ -1,6 +1,7 @@
 import pytest
 from flask import session
-from spellr.models import User
+from datetime import datetime
+from spellr.models import User, AuthHistory
 
 
 def test_register(client, app):
@@ -44,6 +45,13 @@ def test_login(client, auth):
         assert session["_user_id"] == "2"
         assert session["identity.id"] == 2
 
+    test_user = User.query.filter_by(username="test").one()
+    hist = AuthHistory.query.filter_by(user_id=test_user.id).one()
+    # only login should be filled in at this point
+    assert hist.login is not None
+    assert hist.logout is None
+    assert isinstance(hist.login, datetime)
+
 
 @pytest.mark.parametrize(
     ("username", "password", "two_factor", "message"),
@@ -68,3 +76,10 @@ def test_logout(client, auth):
         # verify flask-principal session keys have been removed
         assert session.get("identity.id") is None
         assert session.get("identity.auth_type") is None
+    
+    test_user = User.query.filter_by(username="test").one()
+    hist = AuthHistory.query.filter_by(user_id=test_user.id).one()
+    assert hist.login is not None
+    assert hist.logout is not None
+    assert isinstance(hist.login, datetime)
+    assert isinstance(hist.logout, datetime)
