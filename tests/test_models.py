@@ -1,6 +1,7 @@
 import pytest
+from datetime import datetime
 
-from spellr.models import User, Role, Question
+from spellr.models import User, Role, Question, AuthHistory
 from spellr.extensions import db
 
 
@@ -88,3 +89,25 @@ class TestQuestions:
         q_user = User.query.get(q.user.id)
 
         assert q_user == test_user
+
+
+@pytest.mark.usefixtures("app")
+class TestAuthHistory:
+    def test_history(self):
+        test_user = User.query.filter_by(username="test").one()
+        hist = AuthHistory(
+            login=datetime(year=2020, month=1, day=1, hour=1, minute=0),
+            logout=datetime(year=2020, month=1, day=1, hour=1, minute=5),
+        )
+        test_user.auth_histories.append(hist)
+
+        db.session.add(hist)
+        db.session.commit()
+
+        h = AuthHistory.query.filter_by(user_id=test_user.id).first()
+
+        assert h == hist
+        assert h.login == datetime(year=2020, month=1, day=1, hour=1, minute=0)
+        assert h.logout == datetime(year=2020, month=1, day=1, hour=1, minute=5)
+        diff = h.logout - h.login
+        assert diff.seconds / 60 == 5

@@ -3,6 +3,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import UserMixin
 from sqlalchemy import event
 
+# many-to-many association table linking users and their roles
 role_association = db.Table(
     "user_role_mtom",
     db.Column("user_id", db.Integer, db.ForeignKey("users.id"), primary_key=True),
@@ -25,6 +26,7 @@ class User(db.Model, UserMixin):
         backref=db.backref("users", lazy=True),
     )
     questions = db.relationship("Question", back_populates="user")
+    auth_histories = db.relationship("AuthHistory", backref="user", lazy=True)
 
     def set_password(self, password):
         """ convenience function to generate the hashed user password """
@@ -67,3 +69,13 @@ class Question(db.Model):
     result = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     user = db.relationship("User", back_populates="questions")
+
+
+class AuthHistory(db.Model):
+    """Data model for login and logout times for a user"""
+
+    __tablename__ = "auth_histories"
+    id = db.Column(db.Integer, primary_key=True)
+    login = db.Column(db.DateTime)
+    logout = db.Column(db.DateTime)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
