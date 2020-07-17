@@ -20,9 +20,10 @@ from flask_principal import (
 )
 
 from spellr.extensions import db, login_manager
-from spellr.models import User
+from spellr.models import User, AuthHistory
 from spellr.util import flash_errors
 from spellr.forms import RegisterForm, LoginForm
+from datetime import datetime
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -79,7 +80,13 @@ def login():
         identity_changed.send(
             current_app._get_current_object(), identity=Identity(form.user.id)
         )
-        print(f"current_user: {current_user.__dict__}")
+
+        # update user's log in time
+        hist = AuthHistory(login=datetime.now())
+        form.user.auth_histories.append(hist)
+        db.session.add(hist)
+        db.session.commit()
+
         flash("You are logged in.", "success")
         return redirect(url_for("index"))
     else:
@@ -91,16 +98,23 @@ def login():
 @login_required
 def logout():
     """ log the user out """
+    # persist the user's logout time before loging them out
+    hist = (
+        AuthHistory.query.filter_by(user_id=current_user.id)
+        .order_by(AuthHistory.login.desc())
+        .first()
+    )
+    hist.logout = datetime.now()
+    db.session.add(hist)
+    db.session.commit()
+
     # handy-dandy convenience function from Flask-Login to log the user out and invalidate
     # their session
-    print(f"session: {session}")
     logout_user()
 
     # remove session keys set by Flask-Principal
     for key in ("identity.id", "identity.auth_type"):
         session.pop(key, None)
-
-    print(f"after pop: {session}")
 
     # tell flask-principal the user is anonymous
     identity_changed.send(
