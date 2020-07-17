@@ -76,7 +76,7 @@ def test_logout(client, auth):
         # verify flask-principal session keys have been removed
         assert session.get("identity.id") is None
         assert session.get("identity.auth_type") is None
-    
+
     test_user = User.query.filter_by(username="test").one()
     hist = AuthHistory.query.filter_by(user_id=test_user.id).one()
     assert hist.login is not None

@@ -5,7 +5,7 @@ from flask import (
 )
 from flask_login import login_required
 
-from spellr.forms import HistoryForm
+from spellr.forms import HistoryForm, AuthHistoryForm
 from spellr.models import User, Question
 from spellr.util import flash_errors
 
@@ -47,3 +47,32 @@ def item(item_id):
     item = Question.query.get(item_id)
 
     return render_template("history/item.html", item_id=item_id, item=item)
+
+
+@bp.route("/login_history", methods=("GET", "POST",))
+@login_required
+def auth_history():
+    """route for admins to see the login and logout history of other users"""
+
+    hist_list = []
+    user_exists = False
+    user_id = None
+
+    form = AuthHistoryForm(request.form)
+    if form.validate_on_submit():
+        user_id = form.userid.data
+
+        user_obj = User.query.filter_by(username=user_id).first()
+        user_exists = user_obj is not None
+        if user_exists:
+            hist_list = user_obj.auth_histories
+    else:
+        flash_errors(form)
+
+    return render_template(
+        "history/auth_history.html",
+        form=form,
+        hist_list=hist_list,
+        user_exists=user_exists,
+        user_id=user_id,
+    )

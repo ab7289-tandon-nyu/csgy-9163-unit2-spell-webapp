@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1>{% block title %}Login History{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <form class="col s12" method="post">
+            {{ form.csrf_token }}
+            <div class="row s6">
+                <div class="input-field col s6">
+                    {{ form.userid.label }}
+                    {{ form.userid(class="_validate") }}
+                </div>
+            </div>
+            <button class="btn waves-effect waves-light orange" type="submit" name="action">Search History
+                <i class="material-icons right">send</i>
+            </button>
+        </form>
+    </div>
+    <div class="row">
+        {% if hist_list|length < 1 and user_exists and user_id %}
+            <p>No logins found for user_id: {{ user_id }}</p>
+        {% elif not user_exists and user_id %}
+            <p>Unable to find a registered user for user_id: {{ user_id }}</p>
+        {% elif hist_list|length > 0 and user_exists %}
+            <table class="highlight centered">
+                <thead>
+                    <tr>
+                        <th>Login ID</th>
+                        <th>Login Time</th>
+                        <th>Logout Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in hist_list|sort(attribute='id') %}
+                        <tr id="login{{ item.id }}">
+                            <td>{{ item.id }}</td>
+                            <td>{{ item.login.strftime('%Y/%m/%d %I:%M:%S %p')}}</td>
+                            {% if item.logout %}
+                                <td>{{ item.logout.strftime('%Y/%m/%d %I:%M:%S %p')}}</td>
+                            {% else %}
+                                <td>N/A</td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+{% endblock %}

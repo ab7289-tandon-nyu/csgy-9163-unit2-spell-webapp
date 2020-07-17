@@ -19,6 +19,7 @@
                     {% if current_user.is_authenticated %}
                         <li><a href="{{ url_for('spell.spell') }}">Spellr</a>
                         <li><a href="{{ url_for('history.history') }}">History</a>
+                        <li><a href="{{ url_for('history.auth_history') }}">Login History</a>
                         <li><span>Welcome, {{ current_user.username }}</span>
                         <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
                     {% else %}
@@ -32,6 +33,7 @@
                         <li><span>{{ current_user.username }}</span>
                         <li><a href="{{ url_for('spell.spell') }}">Spellr</a>
                         <li><a href="{{ url_for('history.history') }}">History</a>
+                        <li><a href="{{ url_for('history.auth_history') }}">Login History</a>
                         <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
                     {% else %}
                         <li><a href="{{ url_for('auth.register') }}">Register</a>

@@ -113,3 +113,17 @@ class HistoryForm(FlaskForm):
 
     def __init__(self, *args, **kwargs):
         super(HistoryForm, self).__init__(*args, **kwargs)
+
+
+class AuthHistoryForm(FlaskForm):
+    """form to retrieve the auth history for a user, would just have reused the HistoryForm
+    except for the requirement that the input field id be 'userid' instead of 'userquery'"""
+
+    userid = StringField(
+        "Enter the username",
+        id="userid",
+        validators=[DataRequired(), Length(min=3, max=25)],
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(AuthHistoryForm, self).__init__(*args, **kwargs)
