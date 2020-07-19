@@ -8,6 +8,7 @@ from flask_login import login_required
 from spellr.forms import HistoryForm, AuthHistoryForm
 from spellr.models import User, Question
 from spellr.util import flash_errors
+from spellr.permissions import admin_perm
 
 bp = Blueprint("history", __name__)
 
@@ -51,6 +52,7 @@ def item(item_id):
 
 @bp.route("/login_history", methods=("GET", "POST",))
 @login_required
+@admin_perm.require(http_exception=403)
 def auth_history():
     """route for admins to see the login and logout history of other users"""
 

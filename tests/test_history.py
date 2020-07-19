@@ -61,6 +61,8 @@ def test_history_item_found(auth, client):
 def test_login_history_auth(auth, client):
     assert client.get("/login_history").status_code == 302
     auth.login()
+    assert client.get("/login_history").status_code == 403
+    auth.login(username="test_admin", password="test_admin")
     assert client.get("/login_history").status_code == 200
 
 
@@ -73,11 +75,11 @@ def test_login_history_auth(auth, client):
             b"Field must be between 3 and 25 characters long",
         ),
         ("test2", b"Unable to find a registered user for user_id"),
-        ("test", b"Login ID"),
+        ("test_admin", b"Login ID"),
     ),
 )
 def test_login_history_results(auth, client, query, message):
-    auth.login()
+    auth.login(username="test_admin", password="test_admin")
     response = client.post("/login_history", data={"userid": query})
 
     assert response.status_code == 200

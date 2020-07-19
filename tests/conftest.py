@@ -4,7 +4,7 @@ import tempfile
 import pytest
 from spellr import create_app
 from spellr.extensions import db as _db
-from spellr.models import User
+from spellr.models import User, Role
 
 
 @pytest.fixture
@@ -34,7 +34,14 @@ def app():
         # create a user to test with
         user = User(username="test", two_factor="1231231234",)
         user.set_password("test")
+        admin_user = User(username="test_admin", two_factor="1231231234")
+        admin_user.set_password("test_admin")
+        admin_role = Role.query.filter_by(name="admin").one()
+        admin_user.roles.append(admin_role)
+
         _db.session.add(user)
+        _db.session.add(admin_user)
+        _db.session.add(admin_role)
         _db.session.commit()
         # pass the app to the fixture so it can be utilized in each test
         yield app
