@@ -16,13 +16,13 @@ from flask_principal import (
     identity_loaded,
     RoleNeed,
     UserNeed,
-    # Permission,
 )
 
 from spellr.extensions import db, login_manager
 from spellr.models import User, AuthHistory
 from spellr.util import flash_errors
 from spellr.forms import RegisterForm, LoginForm
+from spellr.permissions import seeHistoryNeed
 from datetime import datetime
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
@@ -132,6 +132,7 @@ def on_identity_loaded(sender, identity):
     # ad the userNeed to the identity
     if hasattr(current_user, "id"):
         identity.provides.add(UserNeed(current_user.id))
+        identity.provides.add(seeHistoryNeed(current_user.id))
 
     # Assuming the User model has a list of roles, update
     # the identity with the roles that the user provides

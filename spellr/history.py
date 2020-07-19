@@ -2,13 +2,14 @@ from flask import (
     Blueprint,
     render_template,
     request,
+    abort,
 )
 from flask_login import login_required
 
 from spellr.forms import HistoryForm, AuthHistoryForm
 from spellr.models import User, Question
 from spellr.util import flash_errors
-from spellr.permissions import admin_perm
+from spellr.permissions import admin_perm, SeeHistoryPermission
 
 bp = Blueprint("history", __name__)
 
@@ -28,6 +29,9 @@ def history():
         user_obj = User.query.filter_by(username=user_id).first()
         user_exists = user_obj is not None
         if user_exists:
+            history_perm = SeeHistoryPermission(user_obj.id)
+            if not history_perm.can():
+                abort(403)
             q_list = user_obj.questions
     else:
         flash_errors(form)
@@ -46,6 +50,10 @@ def history():
 def item(item_id):
 
     item = Question.query.get(item_id)
+    if item:
+        see_history = SeeHistoryPermission(item.user_id)
+        if not see_history.can():
+            abort(403)
 
     return render_template("history/item.html", item_id=item_id, item=item)
 
