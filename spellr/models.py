@@ -16,16 +16,16 @@ class User(db.Model, UserMixin):
 
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(25), index=False, unique=True, nullable=False)
+    username = db.Column(db.String(25), unique=True, nullable=False)
     password = db.Column(db.String(256), nullable=True)
-    two_factor = db.Column(db.String(10), index=False, unique=False, nullable=False)
+    two_factor = db.Column(db.String(10), unique=False, nullable=False)
     roles = db.relationship(
         "Role",
         secondary=role_association,
         lazy="subquery",
         backref=db.backref("users", lazy=True),
     )
-    questions = db.relationship("Question", back_populates="user")
+    questions = db.relationship("Question", back_populates="user", lazy=True)
     auth_histories = db.relationship("AuthHistory", backref="user", lazy=True)
 
     def set_password(self, password):
