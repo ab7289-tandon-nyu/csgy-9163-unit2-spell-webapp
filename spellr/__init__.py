@@ -102,8 +102,8 @@ def create_app(test_config=None):
             db.session.commit()
 
         if User.query.filter_by(username="admin").count() == 0:
-            admin_user = User(username="admin", two_factor="1231231234")
-            admin_user.set_password("password")
+            admin_user = User(username="admin", two_factor="12345678901")
+            admin_user.set_password("Administrator@1")
             # admin_user.roles.append(user_role)
             admin_user.roles.append(admin_role)
 
