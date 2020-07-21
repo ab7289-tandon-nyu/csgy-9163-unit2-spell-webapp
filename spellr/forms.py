@@ -11,6 +11,7 @@ from spellr.models import User
 class LoginForm(FlaskForm):
 
     username = StringField("Username", validators=[DataRequired()], id="uname")
+    # todo restrict special characters except for '_'
     password = PasswordField("Password", validators=[DataRequired()], id="pword")
     two_factor = StringField(
         "Two Factor Auth Device", id="2fa", validators=[DataRequired()]
