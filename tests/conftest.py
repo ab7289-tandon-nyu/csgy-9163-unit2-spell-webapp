@@ -2,9 +2,9 @@ import os
 import tempfile
 
 import pytest
-from spellr import create_app
-from spellr.extensions import db as _db
-from spellr.models import User
+from app import create_app
+from app.extensions import db as _db
+from app.models import User
 
 
 @pytest.fixture

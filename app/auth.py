@@ -1,10 +1,10 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for, session
 from flask_login import login_required, login_user, logout_user
 
-from spellr.extensions import db, login_manager
-from spellr.models import User
-from spellr.util import flash_errors
-from spellr.forms import RegisterForm, LoginForm
+from app.extensions import db, login_manager
+from app.models import User
+from app.util import flash_errors
+from app.forms import RegisterForm, LoginForm
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 

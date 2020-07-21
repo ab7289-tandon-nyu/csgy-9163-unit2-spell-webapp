@@ -1,6 +1,6 @@
 import pytest
 from flask import session
-from spellr.models import User
+from app.models import User
 
 
 def test_register(client, app):

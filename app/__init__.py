@@ -2,7 +2,7 @@ import os
 
 from flask import Flask
 from datetime import timedelta
-from spellr.extensions import db, csrf, login_manager, talisman
+from app.extensions import db, csrf, login_manager, talisman
 
 
 def create_app(test_config=None):
