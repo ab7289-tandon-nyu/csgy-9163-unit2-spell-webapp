@@ -26,6 +26,7 @@ def create_app(test_config=None):
         # sets the SameSite cookie option to restrict how cookies are
         # sent with requests from external sites
         SESSION_COOKIE_SAMESITE="Lax",
+        DEBUG=True,
     )
 
     if test_config is None:
