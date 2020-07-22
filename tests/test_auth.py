@@ -1,7 +1,7 @@
 import pytest
 from flask import session
 from datetime import datetime
-from spellr.models import User, AuthHistory
+from app.models import User, AuthHistory
 
 
 def test_register(client, app):

@@ -1,7 +1,7 @@
 import pytest
 
-from spellr.models import User, Question
-from spellr.extensions import db
+from app.models import User, Question
+from app.extensions import db
 
 
 def create_question(text="some text", result="no errors"):

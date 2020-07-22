@@ -1,4 +1,4 @@
-from spellr import create_app
+from app import create_app
 
 
 def test_config(temp_dir, monkeypatch):

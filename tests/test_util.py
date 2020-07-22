@@ -1,5 +1,5 @@
 import pytest
-from spellr.util import get_flash_msg
+from app.util import get_flash_msg
 
 
 @pytest.mark.parametrize(

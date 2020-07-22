@@ -4,8 +4,8 @@ from flask import Flask
 from flask_principal import Principal
 
 # from datetime import timedelta
-from spellr.extensions import db, csrf, login_manager, talisman
-from spellr.models import User, Role
+from app.extensions import db, csrf, login_manager, talisman
+from app.models import User, Role
 
 
 def create_app(test_config=None):
@@ -29,10 +29,7 @@ def create_app(test_config=None):
         DEBUG=True,
     )
 
-    if test_config is None:
-        # load the instance config, if it exists, when not testing
-        app.config.from_pyfile("config.py", silent=True)
-    else:
+    if test_config:
         # load the test config if passed in
         app.config.from_mapping(test_config)
 

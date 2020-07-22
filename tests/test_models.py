@@ -1,8 +1,8 @@
 import pytest
 from datetime import datetime
 
-from spellr.models import User, Role, Question, AuthHistory
-from spellr.extensions import db
+from app.models import User, Role, Question, AuthHistory
+from app.extensions import db
 
 
 @pytest.mark.usefixtures("app")
