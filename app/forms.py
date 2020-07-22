@@ -3,7 +3,7 @@ from wtforms import StringField, PasswordField, ValidationError, TextAreaField
 import phonenumbers
 from wtforms.validators import DataRequired, Length
 
-from spellr.models import User
+from app.models import User
 
 # Flask-WTF form definitions. These aide in form validation
 

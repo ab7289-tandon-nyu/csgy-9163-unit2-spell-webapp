@@ -2,7 +2,8 @@ import os
 import tempfile
 
 import pytest
-from app import create_app
+# from app import create_app
+from app import app as _app
 from app.extensions import db as _db
 from app.models import User, Role
 
@@ -15,7 +16,7 @@ def app():
     db_fd, db_path = tempfile.mkstemp()
 
     # define the app with a test configuration
-    app = create_app(
+    app = _app.create_app(
         {
             # setting debug to true so unittests will run in travis
             "DEBUG": True,
@@ -73,12 +74,12 @@ class AuthActions(object):
 
     def login(self, username="test", password="test", two_factor="1231231234"):
         return self._client.post(
-            "/auth/login",
+            "/login",
             data={"username": username, "password": password, "two_factor": two_factor},
         )
 
     def logout(self):
-        return self._client.get("/auth/logout")
+        return self._client.get("/logout")
 
 
 @pytest.fixture

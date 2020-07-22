@@ -18,14 +18,14 @@ from flask_principal import (
     UserNeed,
 )
 
-from spellr.extensions import db, login_manager
-from spellr.models import User, AuthHistory
-from spellr.util import flash_errors
-from spellr.forms import RegisterForm, LoginForm
-from spellr.permissions import seeHistoryNeed
+from app.extensions import db, login_manager
+from app.models import User, AuthHistory
+from app.util import flash_errors
+from app.forms import RegisterForm, LoginForm
+from app.permissions import seeHistoryNeed
 from datetime import datetime
 
-bp = Blueprint("auth", __name__, url_prefix="/auth")
+bp = Blueprint("auth", __name__)
 
 
 @login_manager.user_loader

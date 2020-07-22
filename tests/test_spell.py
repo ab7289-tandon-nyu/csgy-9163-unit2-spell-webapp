@@ -4,7 +4,7 @@ from app.models import User
 def test_index(client, auth):
     response = client.get("/spell_check")
     assert response.status_code == 302
-    assert "http://localhost/auth/login" == response.headers["Location"]
+    assert "http://localhost/login" == response.headers["Location"]
 
     auth.login()
     response = client.get("/spell_check")

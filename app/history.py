@@ -6,10 +6,10 @@ from flask import (
 )
 from flask_login import login_required
 
-from spellr.forms import HistoryForm, AuthHistoryForm
-from spellr.models import User, Question
-from spellr.util import flash_errors
-from spellr.permissions import admin_perm, SeeHistoryPermission
+from app.forms import HistoryForm, AuthHistoryForm
+from app.models import User, Question
+from app.util import flash_errors
+from app.permissions import admin_perm, SeeHistoryPermission
 
 bp = Blueprint("history", __name__)
 

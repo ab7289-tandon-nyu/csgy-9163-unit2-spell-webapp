@@ -1,11 +1,11 @@
-from app import create_app
+from app import app as _app
 
 
 def test_config(temp_dir, monkeypatch):
     monkeypatch.setenv("DATABASE_URL", f"sqlite:////{temp_dir}")
-    assert not create_app().testing
+    assert not _app.create_app().testing
 
 
 def test_test_config(temp_dir, monkeypatch):
     monkeypatch.setenv("DATABASE_URL", f"sqlite:////{temp_dir}")
-    assert create_app({"TESTING": True}).testing
+    assert _app.create_app({"TESTING": True}).testing

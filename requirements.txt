@@ -11,3 +11,4 @@ coverage
 black
 flake8
 coveralls
+python-dotenv

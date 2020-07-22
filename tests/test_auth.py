@@ -5,12 +5,12 @@ from app.models import User, AuthHistory
 
 
 def test_register(client, app):
-    assert client.get("/auth/register").status_code == 200
+    assert client.get("/register").status_code == 200
     response = client.post(
-        "/auth/register",
+        "/register",
         data={"username": "aaa", "password": "aaaaaa", "two_factor": "1112223333"},
     )
-    assert "/auth/login" in response.headers.get("Location")
+    assert "/login" in response.headers.get("Location")
 
     with app.app_context():
         assert User.query.filter_by(username="aaa").first() is not None
@@ -29,14 +29,14 @@ def test_register(client, app):
 )
 def test_register_validate_input(app, client, username, password, two_factor, message):
     response = client.post(
-        "/auth/register",
+        "/register",
         data={"username": username, "password": password, "two_factor": two_factor},
     )
     assert message in response.data
 
 
 def test_login(client, auth):
-    assert client.get("/auth/login").status_code == 200
+    assert client.get("/login").status_code == 200
     response = auth.login()
     assert response.headers["Location"] == "http://localhost/"
 
