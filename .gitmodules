@@ -1,1 +1,4 @@
 
+[submodule "app/lib/spell_check"]
+	path = app/lib/spell_check
+	url = https://github.com/ab7289-tandon-nyu/csgy-9163-unit1-spell.git
