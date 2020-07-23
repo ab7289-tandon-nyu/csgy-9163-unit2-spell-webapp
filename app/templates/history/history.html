@@ -25,10 +25,11 @@
         {% elif not user_exists and user_id %}
             <p>Unable to find a registered user for user_id: {{ user_id }}</p>
         {% elif q_list|length > 0 and user_exists %}
+            <p id="numqueries">{{q_list|length}}</p>
             <ul class="collection with-header">
                 <li class="collection-header"><h4>Results</h4></li>
                 {% for q in q_list %}
-                    <a href="{{ url_for("history.item", item_id=q.id) }}" class="collection-item">Query{{ q.id }}</a>
+                    <a href="{{ url_for("history.item", item_id=q.id) }}" class="collection-item" id="query{{ q.id }}">Query{{ q.id }}</a>
                 {% endfor %}
             </ul>
         {% endif %}

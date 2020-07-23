@@ -35,13 +35,13 @@
                 </thead>
                 <tbody>
                     {% for item in hist_list|sort(attribute='id') %}
-                        <tr id="login{{ item.id }}">
+                        <tr>
                             <td>{{ item.id }}</td>
-                            <td>{{ item.login.strftime('%Y/%m/%d %I:%M:%S %p')}}</td>
+                            <td  id="login{{ item.id }}_time">{{ item.login.strftime('%Y/%m/%d %I:%M:%S %p')}}</td>
                             {% if item.logout %}
-                                <td>{{ item.logout.strftime('%Y/%m/%d %I:%M:%S %p')}}</td>
+                                <td id="logout{{ item.id }}_time">{{ item.logout.strftime('%Y/%m/%d %I:%M:%S %p')}}</td>
                             {% else %}
-                                <td>N/A</td>
+                                <td id="logout{{ item.id }}_time">N/A</td>
                             {% endif %}
                         </tr>
                     {% endfor %}
