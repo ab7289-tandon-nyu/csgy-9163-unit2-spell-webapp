@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1>{% block title %}History - Query{{ item_id }}{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="divider"></div>
+        <div class="col s12 m2 l1"></div>
+        <div class="col s12 m8 l10">
+        {% if item %}
+            <div class="section">
+                <h5>Query ID</h5>
+                <p id="queryid">{{ item.id }}<p>
+            </div>
+            <div class="divider"></div>
+            <div class="section">
+                <h5>Username</h5>
+                <p id="username">{{ item.user.username }}<p>
+            </div>
+            <div class="divider"></div>
+            <div class="section">
+                <h5>Original Question</h5>
+                <p id="querytext">{{ item.text }}<p>
+            </div>
+            <div class="divider"></div>
+            <div class="section">
+                <h5>Result</h5>
+                <p id="queryresults">{{ item.result }}<p>
+            </div>
+            <div class="divider"></div>
+        {% else %}
+            <h5>No Item Found</h5>
+        {% endif %}
+        </div>
+        <div class="col s12 m2 l1"></div>
+    </div>
+{% endblock %}

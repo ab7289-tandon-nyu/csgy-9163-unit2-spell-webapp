@@ -2,9 +2,11 @@ import os
 import tempfile
 
 import pytest
-from spellr import create_app
-from spellr.extensions import db as _db
-from spellr.models import User
+
+# from app import create_app
+from app import app as _app
+from app.extensions import db as _db
+from app.models import User, Role
 
 
 @pytest.fixture
@@ -15,7 +17,7 @@ def app():
     db_fd, db_path = tempfile.mkstemp()
 
     # define the app with a test configuration
-    app = create_app(
+    app = _app.create_app(
         {
             # setting debug to true so unittests will run in travis
             "DEBUG": True,
@@ -34,7 +36,14 @@ def app():
         # create a user to test with
         user = User(username="test", two_factor="1231231234",)
         user.set_password("test")
+        admin_user = User(username="test_admin", two_factor="1231231234")
+        admin_user.set_password("test_admin")
+        admin_role = Role.query.filter_by(name="admin").one()
+        admin_user.roles.append(admin_role)
+
         _db.session.add(user)
+        _db.session.add(admin_user)
+        _db.session.add(admin_role)
         _db.session.commit()
         # pass the app to the fixture so it can be utilized in each test
         yield app
@@ -66,15 +75,26 @@ class AuthActions(object):
 
     def login(self, username="test", password="test", two_factor="1231231234"):
         return self._client.post(
-            "/auth/login",
+            "/login",
             data={"username": username, "password": password, "two_factor": two_factor},
         )
 
     def logout(self):
-        return self._client.get("/auth/logout")
+        return self._client.get("/logout")
 
 
 @pytest.fixture
 def auth(client):
     """ fixture to provide the AuthActions class to tests """
     return AuthActions(client)
+
+
+@pytest.fixture
+def temp_dir():
+    db_fd, db_path = tempfile.mkstemp()
+
+    yield db_path
+
+    # finally destroy the temp directories we created
+    os.close(db_fd)
+    os.unlink(db_path)

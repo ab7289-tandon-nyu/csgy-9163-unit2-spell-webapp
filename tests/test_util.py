@@ -1,5 +1,5 @@
 import pytest
-from spellr.util import get_flash_msg
+from app.util import get_flash_msg
 
 
 @pytest.mark.parametrize(
@@ -12,6 +12,4 @@ from spellr.util import get_flash_msg
     ),
 )
 def test_utils(error, success, value):
-    ret = get_flash_msg(error=error, success=success)
-    print(f"return value: {ret}")
     assert get_flash_msg(error=error, success=success) == value

@@ -13,6 +13,7 @@ setup(
         "Flask-WTF",
         "flask-login",
         "flask-talisman",
+        "Flask-Principal",
         "phonenumbers",
         "pytest",
     ],  # noqa: E231

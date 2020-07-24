@@ -1,12 +1,31 @@
-from flask import Blueprint, flash, redirect, render_template, request, url_for, session
-from flask_login import login_required, login_user, logout_user
+from flask import (
+    Blueprint,
+    flash,
+    redirect,
+    render_template,
+    request,
+    url_for,
+    session,
+    current_app,
+)
+from flask_login import login_required, login_user, logout_user, current_user
+from flask_principal import (
+    Identity,
+    AnonymousIdentity,
+    identity_changed,
+    identity_loaded,
+    RoleNeed,
+    UserNeed,
+)
 
-from spellr.extensions import db, login_manager
-from spellr.models import User
-from spellr.util import flash_errors
-from spellr.forms import RegisterForm, LoginForm
+from app.extensions import db, login_manager
+from app.models import User, AuthHistory
+from app.util import flash_errors
+from app.forms import RegisterForm, LoginForm
+from app.permissions import seeHistoryNeed
+from datetime import datetime
 
-bp = Blueprint("auth", __name__, url_prefix="/auth")
+bp = Blueprint("auth", __name__)
 
 
 @login_manager.user_loader
@@ -56,6 +75,18 @@ def login():
         # handy-dandy convenience function from Flask-Login to log in the user and add them
         # to the session
         login_user(form.user)
+
+        # Tell flask-principal that the identity has changed
+        identity_changed.send(
+            current_app._get_current_object(), identity=Identity(form.user.id)
+        )
+
+        # update user's log in time
+        hist = AuthHistory(login=datetime.now())
+        form.user.auth_histories.append(hist)
+        db.session.add(hist)
+        db.session.commit()
+
         flash("You are logged in.", "success")
         return redirect(url_for("index"))
     else:
@@ -67,7 +98,44 @@ def login():
 @login_required
 def logout():
     """ log the user out """
+    # persist the user's logout time before loging them out
+    hist = (
+        AuthHistory.query.filter_by(user_id=current_user.id)
+        .order_by(AuthHistory.login.desc())
+        .first()
+    )
+    hist.logout = datetime.now()
+    db.session.add(hist)
+    db.session.commit()
+
     # handy-dandy convenience function from Flask-Login to log the user out and invalidate
     # their session
     logout_user()
+
+    # remove session keys set by Flask-Principal
+    for key in ("identity.id", "identity.auth_type"):
+        session.pop(key, None)
+
+    # tell flask-principal the user is anonymous
+    identity_changed.send(
+        current_app._get_current_object(), identity=AnonymousIdentity()
+    )
     return redirect(url_for("auth.login"))
+
+
+@identity_loaded.connect
+def on_identity_loaded(sender, identity):
+    """ load user roles when they log in """
+    # set the identity user object
+    identity.user = current_user
+
+    # ad the userNeed to the identity
+    if hasattr(current_user, "id"):
+        identity.provides.add(UserNeed(current_user.id))
+        identity.provides.add(seeHistoryNeed(current_user.id))
+
+    # Assuming the User model has a list of roles, update
+    # the identity with the roles that the user provides
+    if hasattr(current_user, "roles"):
+        for role in current_user.roles:
+            identity.provides.add(RoleNeed(role.name))
