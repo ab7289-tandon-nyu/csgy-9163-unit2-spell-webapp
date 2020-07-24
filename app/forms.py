@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, ValidationError, TextAreaField
-import phonenumbers
+from wtforms import StringField, PasswordField, TextAreaField
+
+# import phonenumbers
 from wtforms.validators import DataRequired, Length
 
 from app.models import User
@@ -62,7 +63,8 @@ class RegisterForm(FlaskForm):
         "Two Factor Auth Device",
         id="2fa",
         validators=[
-            DataRequired(message="Failure, Two Factor Auth device is required.")
+            DataRequired(message="Failure, Two Factor Auth device is required."),
+            Length(min=11, max=11),
         ],
     )
 
@@ -70,17 +72,17 @@ class RegisterForm(FlaskForm):
         super(RegisterForm, self).__init__(*args, **kwargs)
         self.user = None
 
-    def validate_two_factor(form, field):
-        """ handy function to validate that the value input in the Two Factor
-        field is a valid US phone Number """
-        try:
-            input_number = phonenumbers.parse(field.data, region="US")
-            if not phonenumbers.is_possible_number(input_number):
-                raise ValidationError("Failure, invalid phone number.")
-        except phonenumbers.NumberParseException:
-            # input_number = phonenumbers.parse("+1"+field.data)
-            # if not phonenumbers.is_valid_number(input_number):
-            raise ValidationError("Failure, invalid phone number.")
+    # def validate_two_factor(form, field):
+    #     """ handy function to validate that the value input in the Two Factor
+    #     field is a valid US phone Number """
+    #     try:
+    #         input_number = phonenumbers.parse(field.data, region="US")
+    #         if not phonenumbers.is_possible_number(input_number):
+    #             raise ValidationError("Failure, invalid phone number.")
+    #     except phonenumbers.NumberParseException:
+    #         # input_number = phonenumbers.parse("+1"+field.data)
+    #         # if not phonenumbers.is_valid_number(input_number):
+    #         raise ValidationError("Failure, invalid phone number.")
 
     def validate(self):
         initial_validation = super(RegisterForm, self).validate()

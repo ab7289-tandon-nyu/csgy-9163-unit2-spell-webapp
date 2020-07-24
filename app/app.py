@@ -4,7 +4,8 @@ from flask import Flask
 from flask_principal import Principal
 
 # from datetime import timedelta
-from app.extensions import db, csrf, login_manager, talisman
+# from app.extensions import db, csrf, login_manager, talisman
+from app.extensions import db, csrf, login_manager
 from app.models import User, Role
 
 
@@ -27,6 +28,8 @@ def create_app(test_config=None):
         # sent with requests from external sites
         SESSION_COOKIE_SAMESITE="Lax",
         DEBUG=True,
+        FORCE_HTTP=False,
+        STRICT_TRANSPORT_SECURITY=False,
     )
 
     if test_config:
@@ -46,14 +49,14 @@ def create_app(test_config=None):
     csrf.init_app(app)
 
     # init xss protection
-    csp = {
-        "default-src": "'self'",
-        "style-src": ["'self'", "fonts.googleapis.com"],
-        "font-src": ["'self'", "fonts.gstatic.com"],
-        "script-src": ["'self'", "code.jquery.com"],
-        "frame-ancestors": "'none'",
-    }
-    talisman.init_app(app, content_security_policy=csp)
+    # csp = {
+    #     "default-src": "'self'",
+    #     "style-src": ["'self'", "fonts.googleapis.com"],
+    #     "font-src": ["'self'", "fonts.gstatic.com"],
+    #     "script-src": ["'self'", "code.jquery.com"],
+    #     "frame-ancestors": "'none'",
+    # }
+    # talisman.init_app(app, content_security_policy=csp)
 
     # init flask-login
     login_manager.session_protection = "strong"

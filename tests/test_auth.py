@@ -8,7 +8,7 @@ def test_register(client, app):
     assert client.get("/register").status_code == 200
     response = client.post(
         "/register",
-        data={"username": "aaa", "password": "aaaaaa", "two_factor": "1112223333"},
+        data={"username": "aaa", "password": "aaaaaa", "two_factor": "11112223333"},
     )
     assert "/login" in response.headers.get("Location")
 
@@ -21,10 +21,10 @@ def test_register(client, app):
     (
         ("", "", "", b"Failure, Username is required"),
         ("a", "", "", b"Failure, Password is required."),
-        ("test", "test", "1112223333", b"already registered"),
+        ("test", "test", "11112223333", b"already registered"),
         ("a", "a", "", b"Failure, Two Factor Auth device is required."),
-        ("test", "test", "12", b"Failure, invalid phone number."),
-        ("test", "test", "abc", b"Failure, invalid phone number."),
+        ("test", "test", "12", b"Field must be exactly 11 characters long"),
+        ("test", "test", "abc", b"Field must be exactly 11 characters long"),
     ),
 )
 def test_register_validate_input(app, client, username, password, two_factor, message):
