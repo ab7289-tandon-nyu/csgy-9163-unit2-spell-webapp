@@ -27,9 +27,6 @@ jobs:
         - git submodule update --init --recursive
         - pip install cpp-coveralls gcovr
         - sudo apt-get update -y && sudo apt-get -y install build-essential check pkg-config
-        - ls app
-        - ls app/lib
-        - ls app/lib/spell_check
         - mkdir app/lib/spell_check/bin
         - mkdir app/lib/spell_check/build
         - cd app/lib/spell_check/build
