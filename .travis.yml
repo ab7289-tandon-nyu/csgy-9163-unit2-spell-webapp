@@ -15,7 +15,7 @@ jobs:
       install: 
         - pip install -r requirements.txt
         - pip install tox-travis
-        - pip install -e .
+        # - pip install -e .
       
       script:
         - flake8
@@ -35,13 +35,13 @@ jobs:
         - cd $TRAVIS_BUILD_DIR
        
       install:
-        - pip install -r requirements.txt
+        # - pip install -r requirements.txt
         - pip install tox-travis
-        - pip install -e .
+        # - pip install -e .
       
       script:
         - tox
-        - coverage run -m pytest
+        # - coverage run -m pytest
       
       after_success:
         - coveralls
