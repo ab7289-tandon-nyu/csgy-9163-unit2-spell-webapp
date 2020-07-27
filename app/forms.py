@@ -32,11 +32,11 @@ class LoginForm(FlaskForm):
         self.user = User.query.filter_by(username=self.username.data).first()
 
         if not self.user or not self.user.check_password(self.password.data):
-            self.username.errors.append("Incorrect username or password")
+            self.username.errors.append("faiture, Incorrect username or password")
             return False
 
         if not self.user.check_two_factor(self.two_factor.data):
-            self.two_factor.errors.append("Two-factor auth device failure")
+            self.two_factor.errors.append("failure, Two-factor auth device failure")
             return False
         return True
 
@@ -92,7 +92,7 @@ class RegisterForm(FlaskForm):
         # check to make sure that the specified username hasn't already been registered
         if User.query.filter_by(username=self.username.data).first() is not None:
             self.username.errors.append(
-                f"User {self.username.data} is already registered."
+                f"failure, User {self.username.data} is already registered."
             )
             return False
         return True

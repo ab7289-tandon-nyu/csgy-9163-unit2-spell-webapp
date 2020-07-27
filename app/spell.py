@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template, request, url_for
+from flask import Blueprint, redirect, render_template, request, url_for, flash
 
 import subprocess
 
@@ -6,6 +6,7 @@ from flask_login import login_required, current_user
 from app.extensions import db
 from app.forms import SpellForm
 from app.models import Question
+from app.util import flash_errors
 
 bp = Blueprint("spell", __name__)
 
@@ -44,6 +45,9 @@ def spell():
         q = Question(text=text, result=result, user_id=current_user.id)
         db.session.add(q)
         db.session.commit()
+        flash("success", "result")
+    else:
+        flash_errors(form, category="result")
 
     return render_template("spell/index.html", form=form, orig_text=text, result=result)
 

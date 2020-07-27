@@ -56,10 +56,10 @@ def register():
         new_user.set_password(form.password.data)
         db.session.add(new_user)
         db.session.commit()
-        flash("Thank you for registering, you can now log in.", "success")
-        return redirect(url_for("auth.login"))
+        flash("success, Thank you for registering, you can now log in.", "success")
+        # return redirect(url_for("auth.login"))
     else:
-        flash_errors(form)
+        flash_errors(form, category="success")
     return render_template("auth/register.html", form=form)
 
 
@@ -88,9 +88,9 @@ def login():
         db.session.commit()
 
         flash("You are logged in.", "success")
-        return redirect(url_for("index"))
+        # return redirect(url_for("index"))
     else:
-        flash_errors(form)
+        flash_errors(form, category="result")
     return render_template("auth/login.html", form=form)
 
 
