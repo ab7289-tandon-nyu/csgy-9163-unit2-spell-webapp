@@ -42,6 +42,11 @@ def spell():
         # decode the returned text so that we can read it nicely
         result = result.decode("utf-8").strip()
 
+        # clear after use so as to not leave clues around about what people are
+        # searching for
+        with open(r"./app/input.txt", "r+") as f:
+            f.truncate(0)
+
         # persist the user's question
         q = Question(text=text, result=result, user_id=current_user.id)
         db.session.add(q)
