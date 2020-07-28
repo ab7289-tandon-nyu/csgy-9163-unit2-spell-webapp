@@ -22,16 +22,16 @@ jobs:
       
     - name: "tests"
 
-      before_install:
-        - git submodule update --init --recursive
-        - pip install cpp-coveralls gcovr
-        - sudo apt-get update -y && sudo apt-get -y install build-essential check pkg-config
-        - mkdir app/lib/spell_check/bin
-        - mkdir app/lib/spell_check/build
-        - cd app/lib/spell_check/build
-        - cmake ..
-        - make
-        - cd $TRAVIS_BUILD_DIR
+      # before_install:
+      #   - git submodule update --init --recursive
+      #   - pip install cpp-coveralls gcovr
+      #   - sudo apt-get update -y && sudo apt-get -y install build-essential check pkg-config
+      #   - mkdir app/lib/spell_check/bin
+      #   - mkdir app/lib/spell_check/build
+      #   - cd app/lib/spell_check/build
+      #   - cmake ..
+      #   - make
+      #   - cd $TRAVIS_BUILD_DIR
        
       install:
         - pip install -r requirements.txt
