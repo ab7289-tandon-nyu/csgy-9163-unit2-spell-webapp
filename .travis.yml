@@ -24,15 +24,6 @@ jobs:
 
       before_install:
         - chmod +x ./app/lib/a.out
-      #   - git submodule update --init --recursive
-      #   - pip install cpp-coveralls gcovr
-      #   - sudo apt-get update -y && sudo apt-get -y install build-essential check pkg-config
-      #   - mkdir app/lib/spell_check/bin
-      #   - mkdir app/lib/spell_check/build
-      #   - cd app/lib/spell_check/build
-      #   - cmake ..
-      #   - make
-      #   - cd $TRAVIS_BUILD_DIR
        
       install:
         - pip install -r requirements.txt
@@ -47,7 +38,6 @@ jobs:
     
     - name: "docker build"
       
-      sudo: required
       services:
         - docker
       
