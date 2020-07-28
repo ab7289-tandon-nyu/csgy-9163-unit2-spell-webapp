@@ -14,6 +14,13 @@ def test_history(client, auth):
     assert client.get("/history").status_code == 200
 
 
+def test_history_user_access(client, auth):
+    auth.login()
+    response = client.get("/history")
+    assert response.status_code == 200
+    assert b"<form" not in response.data
+
+
 @pytest.mark.parametrize(
     ("query", "status_code", "message"),
     (
@@ -25,11 +32,10 @@ def test_history(client, auth):
         ),
         ("test", "200", b"user_id: test"),
         ("test2", "200", b"Unable to find a registered user for user_id"),
-        ("test_admin", "403", b"Forbidden"),
     ),
 )
 def test_history_inputs(auth, client, query, status_code, message):
-    auth.login()
+    auth.login(username="test_admin", password="test_admin")
     response = client.post("/history", data={"userquery": query})
 
     assert response.status_code == int(status_code)
@@ -42,6 +48,7 @@ def test_history_admin_access(auth, client):
     response = client.post("/history", data={"userquery": "test"})
 
     assert response.status_code == 200
+    assert b"<form" in response.data
 
 
 def test_history_item_not_found(auth, client):

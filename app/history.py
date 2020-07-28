@@ -4,7 +4,7 @@ from flask import (
     request,
     abort,
 )
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 from app.forms import HistoryForm, AuthHistoryForm
 from app.models import User, Question
@@ -21,6 +21,17 @@ def history():
     q_list = []
     user_exists = False
     user_id = None
+    is_admin = False
+
+    if admin_perm.can():
+        is_admin = True
+        user_id = current_user.id
+        user_exists = True
+        q_list = User.query.get(current_user.id).questions
+    else:
+        user_exists = True
+        user_id = current_user.id
+        q_list = User.query.get(user_id).questions
 
     form = HistoryForm(request.form)
     if form.validate_on_submit():
@@ -33,7 +44,7 @@ def history():
             if not history_perm.can():
                 abort(403)
             q_list = user_obj.questions
-    else:
+    elif is_admin:
         flash_errors(form)
 
     return render_template(
@@ -42,6 +53,7 @@ def history():
         q_list=q_list,
         user_exists=user_exists,
         user_id=user_id,
+        is_admin=is_admin,
     )
 
 
