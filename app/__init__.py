@@ -111,4 +111,11 @@ def create_app(test_config=None):
             db.session.add(admin_user)
             db.session.commit()
 
+        if User.query.filter_by(username="test_user").count() == 0:
+            test_user = User(username="test_user", two_factor="11231231234")
+            test_user.set_password("password")
+
+            db.session.add(test_user)
+            db.session.commit()
+
     return app

@@ -19,12 +19,12 @@ def test_register(client, app):
 @pytest.mark.parametrize(
     ("username", "password", "two_factor", "message"),
     (
-        ("", "", "", b"Failure, Username is required"),
-        ("a", "", "", b"Failure, Password is required."),
+        ("", "", "", b"Incorrect, Username is required"),
+        ("a", "", "", b"Incorrect, Password is required."),
         ("test", "test", "11112223333", b"already registered"),
         ("a", "a", "", b"Failure, Two Factor Auth device is required."),
-        ("test", "test", "12", b"Field must be exactly 11 characters long"),
-        ("test", "test", "abc", b"Field must be exactly 11 characters long"),
+        ("test", "test", "12", b"Error, Two-factor auth failure"),
+        ("test", "test", "abc", b"Error, Two-factor auth failure"),
     ),
 )
 def test_register_validate_input(app, client, username, password, two_factor, message):
@@ -42,8 +42,8 @@ def test_login(client, auth):
 
     with client:
         client.get("/")
-        assert session["_user_id"] == "2"
-        assert session["identity.id"] == 2
+        assert session["_user_id"] == "3"
+        assert session["identity.id"] == 3
 
     test_user = User.query.filter_by(username="test").one()
     hist = AuthHistory.query.filter_by(user_id=test_user.id).one()

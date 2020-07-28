@@ -59,7 +59,7 @@ def register():
         flash("success, Thank you for registering, you can now log in.", "success")
         # return redirect(url_for("auth.login"))
     else:
-        flash_errors(form, category="success")
+        flash_errors(form, category="result")
     return render_template("auth/register.html", form=form)
 
 
@@ -87,10 +87,12 @@ def login():
         db.session.add(hist)
         db.session.commit()
 
-        flash("You are logged in.", "success")
+        flash("success, you are logged in.", "success")
+        flash("success", "result")
         # return redirect(url_for("index"))
     else:
         flash_errors(form, category="result")
+        flash("Error", "result")
     return render_template("auth/login.html", form=form)
 
 
