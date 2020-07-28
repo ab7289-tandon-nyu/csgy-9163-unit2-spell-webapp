@@ -22,7 +22,8 @@ jobs:
       
     - name: "tests"
 
-      # before_install:
+      before_install:
+        - chmod +x ./app/lib/a.out
       #   - git submodule update --init --recursive
       #   - pip install cpp-coveralls gcovr
       #   - sudo apt-get update -y && sudo apt-get -y install build-essential check pkg-config
