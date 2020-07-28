@@ -44,3 +44,13 @@ jobs:
       
       after_success:
         - coveralls
+    
+    - name: "docker build"
+      
+      sudo: required
+      services:
+        - docker
+      
+      script:
+        - docker build -t spell_check .
+      
