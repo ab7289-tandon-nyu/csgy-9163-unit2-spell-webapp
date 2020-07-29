@@ -3,7 +3,7 @@ os: linux
 dist: xenial
 
 python:
-  - "3.6"
+  - "3.7"
 
 git:
   submodules: false
