@@ -19,7 +19,7 @@ def app():
 
     # define the app with a test configuration
     app = create_app(
-        {
+        test_config={
             # setting debug to true so unittests will run in travis
             "DEBUG": True,
             "TESTING": True,

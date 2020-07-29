@@ -1,4 +1,4 @@
-import os
+from importlib import import_module
 
 from flask import Flask
 from flask_principal import Principal
@@ -9,38 +9,39 @@ from app.extensions import db, csrf, login_manager
 from app.models import User, Role
 
 
-def create_app(test_config=None):
+def create_app(config_object="app.settings", test_config=None):
     #  create and configure the app
     app = Flask(__name__, instance_relative_config=True)
-    app.config.from_mapping(
-        SECRET_KEY="dev",
-        # DATABASE=os.path.join(app.instance_path, "spellr.sqlite",
-        SQLALCHEMY_DATABASE_URI=os.getenv(
-            "DATABASE_URL", "sqlite:////tmp/spellr.sqlite"
-        ),
-        # turned off for performance
-        SQLALCHEMY_ECHO=False,
-        # turned off for performance
-        SQLALCHEMY_TRACK_MODIFICATIONS=False,
-        # set to a short time for demonstration purposes
-        # PERMANENT_SESSION_LIFETIME=timedelta(minutes=2),
-        # sets the SameSite cookie option to restrict how cookies are
-        # sent with requests from external sites
-        SESSION_COOKIE_SAMESITE="Lax",
-        DEBUG=True,
-        FORCE_HTTP=False,
-        STRICT_TRANSPORT_SECURITY=False,
-    )
+    # app.config.from_mapping(
+    #     SECRET_KEY="dev",
+    #     # DATABASE=os.path.join(app.instance_path, "spellr.sqlite",
+    #     SQLALCHEMY_DATABASE_URI=os.getenv(
+    #         "DATABASE_URL", "sqlite:////tmp/spellr.sqlite"
+    #     ),
+    #     # turned off for performance
+    #     SQLALCHEMY_ECHO=False,
+    #     # turned off for performance
+    #     SQLALCHEMY_TRACK_MODIFICATIONS=False,
+    #     # set to a short time for demonstration purposes
+    #     # PERMANENT_SESSION_LIFETIME=timedelta(minutes=2),
+    #     # sets the SameSite cookie option to restrict how cookies are
+    #     # sent with requests from external sites
+    #     SESSION_COOKIE_SAMESITE="Lax",
+    #     DEBUG=True,
+    #     FORCE_HTTP=False,
+    #     STRICT_TRANSPORT_SECURITY=False,
+    # )
+    app.config.from_object(config_object)
 
     if test_config:
         # load the test config if passed in
         app.config.from_mapping(test_config)
 
     # ensure the instance folder exists
-    try:
-        os.makedirs(app.instance_path)
-    except OSError:
-        pass
+    # try:
+    #     os.makedirs(app.instance_path)
+    # except OSError:
+    #     pass
 
     # include db
     db.init_app(app)
@@ -102,18 +103,30 @@ def create_app(test_config=None):
         if commit:
             db.session.commit()
 
-        if User.query.filter_by(username="admin").count() == 0:
-            admin_user = User(username="admin", two_factor="12345678901")
-            admin_user.set_password("Administrator@1")
+        config_module = import_module(config_object)
+
+        if (
+            config_module.ADMIN_USER
+            and User.query.filter_by(username=config_module.ADMIN_USER).count() == 0
+        ):
+            admin_user = User(
+                username=config_module.ADMIN_USER, two_factor=config_module.ADMIN_TF
+            )
+            admin_user.set_password(config_module.ADMIN_PASS)
             # admin_user.roles.append(user_role)
             admin_user.roles.append(admin_role)
 
             db.session.add(admin_user)
             db.session.commit()
 
-        if User.query.filter_by(username="test_user").count() == 0:
-            test_user = User(username="test_user", two_factor="11231231234")
-            test_user.set_password("password")
+        if (
+            config_module.TEST_USER
+            and User.query.filter_by(username=config_module.TEST_USER).count() == 0
+        ):
+            test_user = User(
+                username=config_module.TEST_USER, two_factor=config_module.TEST_TF
+            )
+            test_user.set_password(config_module.TEST_PASS)
 
             db.session.add(test_user)
             db.session.commit()

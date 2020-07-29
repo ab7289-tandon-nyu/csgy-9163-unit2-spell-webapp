@@ -8,4 +8,4 @@ def test_config(temp_dir, monkeypatch):
 
 def test_test_config(temp_dir, monkeypatch):
     monkeypatch.setenv("DATABASE_URL", f"sqlite:////{temp_dir}")
-    assert create_app({"TESTING": True}).testing
+    assert create_app(test_config={"TESTING": True}).testing
