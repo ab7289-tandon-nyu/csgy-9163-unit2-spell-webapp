@@ -50,8 +50,14 @@ spec:
         name: app
         ports:
         - containerPort: 5000
+        volumeMounts:
+          - name: sqlite-persistent-storage
+          mountPath: /tmp
         resources: {}
       restartPolicy: Always
       serviceAccountName: ""
-      volumes: null
+      volumes: 
+        - name: sqlite-persistent-storage
+        persistentVolumeClaim:
+          claimName: sqlite-pv-claim
 status: {}
