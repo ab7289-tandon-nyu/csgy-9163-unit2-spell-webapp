@@ -26,11 +26,20 @@ spec:
       containers:
       - env:
         - name: ADMIN_PASS
-          value: Administrator@1
+          valueFrom:
+              secretKeyRef:
+                name: admin-secret
+                key: password
         - name: ADMIN_TF
-          value: "12345678901"
+          valueFrom:
+              secretKeyRef:
+                name: admin-secret
+                key: two_factor
         - name: ADMIN_USER
-          value: admin
+          valueFrom:
+              secretKeyRef:
+                name: admin-secret
+                key: username
         - name: DATABASE_URL
           value: sqlite:////tmp/spellr.sqlite
         - name: FLASK_APP
