@@ -47,7 +47,10 @@ spec:
         - name: FLASK_ENV
           value: production
         - name: SECRET_KEY
-          value: not-so-secret-yet
+          valueFrom:
+              secretKeyRef:
+                name: key-secret
+                key: key
         - name: TEST_PASS
           valueFrom:
               secretKeyRef:
@@ -64,7 +67,7 @@ spec:
                 name: user-secret
                 key: username
         image: ab7289-tandon/spell_check:1.0
-        imagePullPolicy: ""
+        imagePullPolicy: "IfNotPresent"
         name: app
         ports:
         - containerPort: 5000
