@@ -53,7 +53,13 @@ spec:
         volumeMounts:
           - name: sqlite-persistent-storage
             mountPath: /tmp
-        resources: {}
+        resources: 
+          limits:
+            memory: "500Mi"
+            cpu: "1"
+          requests:
+            memory: "100Mi"
+            cpu: "0.5"
       restartPolicy: Always
       serviceAccountName: ""
       volumes: 
