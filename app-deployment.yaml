@@ -49,11 +49,20 @@ spec:
         - name: SECRET_KEY
           value: not-so-secret-yet
         - name: TEST_PASS
-          value: password
+          valueFrom:
+              secretKeyRef:
+                name: user-secret
+                key: password
         - name: TEST_TF
-          value: "11231231234"
+          valueFrom:
+              secretKeyRef:
+                name: user-secret
+                key: two_factor
         - name: TEST_USER
-          value: test_user
+          valueFrom:
+              secretKeyRef:
+                name: user-secret
+                key: username
         image: ab7289-tandon/spell_check:1.0
         imagePullPolicy: ""
         name: app
