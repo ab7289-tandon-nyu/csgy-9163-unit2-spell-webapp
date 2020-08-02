@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.21.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: app
+  name: app
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      io.kompose.service: app
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml
+        kompose.version: 1.21.0 ()
+      creationTimestamp: null
+      labels:
+        io.kompose.service: app
+    spec:
+      containers:
+      - env:
+        - name: ADMIN_PASS
+          valueFrom:
+              secretKeyRef:
+                name: admin-secret
+                key: password
+        - name: ADMIN_TF
+          valueFrom:
+              secretKeyRef:
+                name: admin-secret
+                key: two_factor
+        - name: ADMIN_USER
+          valueFrom:
+              secretKeyRef:
+                name: admin-secret
+                key: username
+        - name: DATABASE_URL
+          value: sqlite:////tmp/spellr.sqlite
+        - name: FLASK_APP
+          value: app.py
+        - name: FLASK_ENV
+          value: production
+        - name: SECRET_KEY
+          valueFrom:
+              secretKeyRef:
+                name: key-secret
+                key: key
+        - name: TEST_PASS
+          valueFrom:
+              secretKeyRef:
+                name: user-secret
+                key: password
+        - name: TEST_TF
+          valueFrom:
+              secretKeyRef:
+                name: user-secret
+                key: two_factor
+        - name: TEST_USER
+          valueFrom:
+              secretKeyRef:
+                name: user-secret
+                key: username
+        image: ab7289-tandon/spell_check:1.0
+        imagePullPolicy: "IfNotPresent"
+        name: app
+        ports:
+        - containerPort: 5000
+        volumeMounts:
+          - name: sqlite-persistent-storage
+            mountPath: /tmp
+        resources: 
+          limits:
+            memory: "500Mi"
+            cpu: "1"
+          requests:
+            memory: "100Mi"
+            cpu: "0.5"
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes: 
+        - name: sqlite-persistent-storage
+          persistentVolumeClaim:
+            claimName: sqlite-pv-claim
+status: {}
