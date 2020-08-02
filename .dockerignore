@@ -5,6 +5,7 @@ Dockerfile
 .dockerignore
 
 /credentials
+/secrets
 /cache
 /store
 
