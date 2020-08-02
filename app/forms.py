@@ -32,7 +32,7 @@ class LoginForm(FlaskForm):
         self.user = User.query.filter_by(username=self.username.data).first()
 
         if not self.user or not self.user.check_password(self.password.data):
-            self.username.errors.append("Incorrect username or password")
+            self.username.errors.append("failure, Incorrect username or password")
             return False
 
         if not self.user.check_two_factor(self.two_factor.data):
@@ -47,16 +47,16 @@ class RegisterForm(FlaskForm):
         "Username",
         id="uname",
         validators=[
-            DataRequired(message="Failure, Username is required."),
-            Length(min=3, max=25),
+            DataRequired(message="Incorrect, Username is required."),
+            Length(min=3, max=25, message="Incorrect length"),
         ],
     )
     password = PasswordField(
         "Password",
         id="pword",
         validators=[
-            DataRequired(message="Failure, Password is required."),
-            Length(min=4, max=128),
+            DataRequired(message="Incorrect, Password is required."),
+            Length(min=4, max=128, message="Incorrect length"),
         ],
     )
     two_factor = StringField(
@@ -64,7 +64,7 @@ class RegisterForm(FlaskForm):
         id="2fa",
         validators=[
             DataRequired(message="Failure, Two Factor Auth device is required."),
-            Length(min=11, max=11),
+            Length(min=11, max=11, message="Error, Two-factor auth failure"),
         ],
     )
 
@@ -92,7 +92,7 @@ class RegisterForm(FlaskForm):
         # check to make sure that the specified username hasn't already been registered
         if User.query.filter_by(username=self.username.data).first() is not None:
             self.username.errors.append(
-                f"User {self.username.data} is already registered."
+                f"failure, User {self.username.data} is already registered."
             )
             return False
         return True

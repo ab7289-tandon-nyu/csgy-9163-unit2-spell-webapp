@@ -4,7 +4,8 @@ import tempfile
 import pytest
 
 # from app import create_app
-from app import app as _app
+# from app import app as _app
+from app import create_app
 from app.extensions import db as _db
 from app.models import User, Role
 
@@ -17,8 +18,8 @@ def app():
     db_fd, db_path = tempfile.mkstemp()
 
     # define the app with a test configuration
-    app = _app.create_app(
-        {
+    app = create_app(
+        test_config={
             # setting debug to true so unittests will run in travis
             "DEBUG": True,
             "TESTING": True,

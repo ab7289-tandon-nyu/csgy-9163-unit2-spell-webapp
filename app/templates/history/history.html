@@ -5,20 +5,22 @@
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <form class="col s12" method="post">
-            {{ form.csrf_token }}
-            <div class="row s6">
-                <div class="input-field col s6">
-                    {{ form.userquery.label }}
-                    {{ form.userquery(class="_validate") }}
+    {% if is_admin %}
+        <div class="row">
+            <form class="col s12" method="post">
+                {{ form.csrf_token }}
+                <div class="row s6">
+                    <div class="input-field col s6">
+                        {{ form.userquery.label }}
+                        {{ form.userquery(class="_validate") }}
+                    </div>
                 </div>
-            </div>
-            <button class="btn waves-effect waves-light orange" type="submit" name="action">Search History
-                <i class="material-icons right">send</i>
-            </button>
-        </form>
-    </div>
+                <button class="btn waves-effect waves-light orange" type="submit" name="action">Search History
+                    <i class="material-icons right">send</i>
+                </button>
+            </form>
+        </div>
+    {% endif %}
     <div class="row">
         {% if q_list|length < 1 and user_exists and user_id %}
             <p>No questions found for user_id: {{ user_id }}</p>

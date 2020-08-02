@@ -1,14 +1,14 @@
-flask
-Flask-WTF
-flask-login
-Flask-SQLAlchemy
-flask-talisman
-Flask-Principal
-phonenumbers
-tox
-pytest
-coverage
-black
-flake8
-coveralls
-python-dotenv
+flask==1.1.2
+Flask-WTF==0.14.3
+flask-login==0.5.0
+Flask-SQLAlchemy==2.4.4
+# flask-talisman
+Flask-Principal==0.4.0
+# phonenumbers
+tox==3.18.0
+pytest==5.4.3
+coverage==5.2.1
+black==19.10b0
+flake8==3.8.3
+coveralls==2.1.1
+environs==8.0.0

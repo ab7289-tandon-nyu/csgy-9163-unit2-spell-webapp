@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template, request, url_for
+from flask import Blueprint, redirect, render_template, request, url_for, flash
 
 import subprocess
 
@@ -6,6 +6,7 @@ from flask_login import login_required, current_user
 from app.extensions import db
 from app.forms import SpellForm
 from app.models import Question
+from app.util import flash_errors
 
 bp = Blueprint("spell", __name__)
 
@@ -30,20 +31,29 @@ def spell():
         result = subprocess.check_output(
             [
                 # location of the spell_check binary
-                r"./app/lib/spell_check/bin/spell_check",
+                r"./app/lib/a.out",
+                # r"./app/lib/spell_check",
                 # location of the input.txt file that we just wrote the input to
                 r"./app/input.txt",
                 # location of the dictionary file to check the text against
-                r"./app/lib/spell_check/res/wordlist.txt",
+                r"./app/lib/wordlist.txt",
             ]
         )
         # decode the returned text so that we can read it nicely
         result = result.decode("utf-8").strip()
 
+        # clear after use so as to not leave clues around about what people are
+        # searching for
+        with open(r"./app/input.txt", "r+") as f:
+            f.truncate(0)
+
         # persist the user's question
         q = Question(text=text, result=result, user_id=current_user.id)
         db.session.add(q)
         db.session.commit()
+        flash("success", "success")
+    else:
+        flash_errors(form, category="result")
 
     return render_template("spell/index.html", form=form, orig_text=text, result=result)
 

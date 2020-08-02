@@ -49,7 +49,7 @@
                 {% block header %}{% endblock %}
             </header>
             {% for category, message in get_flashed_messages(with_categories=True) %}
-                <div class="flash {{ category }}" id="success">{{ message }}</div>
+                <div class="flash {{ category }}" id="{{ category }}">{{ message }}</div>
             {% endfor %}
             {% block content %}
             {% endblock %}

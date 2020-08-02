@@ -3,7 +3,7 @@ os: linux
 dist: xenial
 
 python:
-  - "3.6"
+  - "3.7"
 
 git:
   submodules: false
@@ -15,7 +15,6 @@ jobs:
       install: 
         - pip install -r requirements.txt
         - pip install tox-travis
-        - pip install -e .
       
       script:
         - flake8
@@ -24,20 +23,11 @@ jobs:
     - name: "tests"
 
       before_install:
-        - git submodule update --init --recursive
-        - pip install cpp-coveralls gcovr
-        - sudo apt-get update -y && sudo apt-get -y install build-essential check pkg-config
-        - mkdir app/lib/spell_check/bin
-        - mkdir app/lib/spell_check/build
-        - cd app/lib/spell_check/build
-        - cmake ..
-        - make
-        - cd $TRAVIS_BUILD_DIR
+        - chmod +x ./app/lib/a.out
        
       install:
         - pip install -r requirements.txt
         - pip install tox-travis
-        - pip install -e .
       
       script:
         - tox
@@ -45,3 +35,12 @@ jobs:
       
       after_success:
         - coveralls
+    
+    - name: "docker build"
+      
+      services:
+        - docker
+      
+      script:
+        - docker build -t spell_check .
+      
