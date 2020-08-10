@@ -106,9 +106,10 @@ def logout():
         .order_by(AuthHistory.login.desc())
         .first()
     )
-    hist.logout = datetime.now()
-    db.session.add(hist)
-    db.session.commit()
+    if hist is not None:
+        hist.logout = datetime.now()
+        db.session.add(hist)
+        db.session.commit()
 
     # handy-dandy convenience function from Flask-Login to log the user out and invalidate
     # their session
